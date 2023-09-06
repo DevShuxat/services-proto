@@ -1,14 +1,14 @@
-package models 
+package models
 
 import (
 	"time"
 )
 
 type EaterProfile struct {
-	EaterID string
-	Name string
+	EaterID     string
+	Name        string
 	PhoneNumber string
-	ImageUrl string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	}
+	ImageUrl    string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
