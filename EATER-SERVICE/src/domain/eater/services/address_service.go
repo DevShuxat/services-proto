@@ -1,25 +1,30 @@
 package services
 
 import (
-	"github.com/DevShuxat/eater-service/EATER-SERVICE/src/domain/eater/service"
+	"context"
+
+	"github.com/DevShuxat/eater-service/EATER-SERVICE/src/domain/eater/models"
+	"github.com/DevShuxat/eater-service/EATER-SERVICE/src/domain/eater/repositories"
 )
 
-type AddressService struct {
-	addresses map[string]*Address
+
+type AddressService interface {
+	CreateAddress(ctx context.Context, name, longitude, latitude string) (string, error)
+	UpdateAddress(ctx context.Context, name, longitude, latitude string) (*models.Address, error)
+	GetAddress(ctx context.Context, id string) (*models.Address, error)
+	DeleteAddress(ctx context.Context, id string) (*models.Address, error)
+	ListAddress(ctx context.Context, eaterID  string) (*models.Address, error)
 }
 
-func NewAddressService() *AddressService {
-	return &AddressService{
-		addresses: make(map[string]*Address),
-	}
+
+func NewAddressService(
+	addressRepo *repositories.AddressRepository,
+) AddressService {
+	addresses: make(map[string]model * address),
 }
 
-func (s *AddressService) GetAddress(id string) *Address {
+func (s *AddressService) GetAddress(id string) *address {
 	return s.addresses[id]
-}
-
-func (s *AddressService) AddAddress(addr *Address) {
-	s.addresses[addr.ID] = addr
 }
 
 func (s *AddressService) UpdateAddress(id string, addr *Address) {
