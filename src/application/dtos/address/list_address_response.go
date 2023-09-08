@@ -1,13 +1,13 @@
 package dtos
 
-import "github.com/DevShuxat/eater-service/src/domain/eater/models"
+import "github.com/DevShuxat/eater-service/src/domain/address/models"
 
 type ListAddressResponse struct {
-	ListAddress *models.Address `json:"eater_id"`
+	eaterID *models.EaterID `json:"address_by_eater_id"`
 }
 
-func NewListAddressResponse(ListAddress *models.) *ListAddressResponse {
+func NewListAddressResponse(eater_id string) *ListAddressResponse {
 	return &ListAddressResponse{
-		listAddress: *models.ListAddress,
+		ListAddress: eater_id,
 	}
 }

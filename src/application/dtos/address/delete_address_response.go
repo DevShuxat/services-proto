@@ -1,11 +1,14 @@
 package dtos
 
-import (
 
-)
-
-type DeleteAddress struct {
-	DeleteAddress *models.DeleteAddress
+type DeleteAddressResponse struct {
+	Success bool   `json:"success"`
+	Message string `json:"message,omitempty"`
 }
 
-func 
+func NewDeleteAddressResponse(success bool, message string) *DeleteAddressResponse {
+	return &DeleteAddressResponse{
+		Success: success,
+		Message: message,
+	}
+}

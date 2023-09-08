@@ -1,7 +1,6 @@
 package dtos
 
 import (
-
 	"github.com/DevShuxat/eater-service/src/domain/eater/models"
 )
 

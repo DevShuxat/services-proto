@@ -15,9 +15,14 @@ import (
 
 type EaterService interface {
 	SignupEater(ctx context.Context, phoneNumber string) (string, error)
-	ConfirmSMSCode(ctx context.Context, eaterID, smsCode string) (*models.EaterProfile, error)
+	ConfirmSMSCode(ctx context.Context, eaterID, code string) (*models.EaterProfile, error)
 	GetEaterProfile(ctx context.Context, eaterID string) (*models.EaterProfile, error)
 	UpdateEaterProfile(ctx context.Context, eaterID, name, imageUrl string) (*models.EaterProfile, error)
+}
+type eaterSvcImpl struct {
+	eaterRepo repositories.EaterRepository	
+	smsClient sms.Client
+	logger    *zap.Logger
 }
 
 func NewEaterService(
@@ -32,27 +37,14 @@ func NewEaterService(
 	}
 }
 
-type eaterSvcImpl struct {
-	eaterRepo repositories.EaterRepository
-	smsClient sms.Client
-	logger    *zap.Logger
-}
-
-func (s *eaterSvcImpl) ConfirmSMSCode(ctx context.Context, eaterID string, smsCode string) (*models.EaterProfile, error) {
-	panic("unimplemented")
-}
-
-func (s *eaterSvcImpl) GetEaterProfile(ctx context.Context, eaterID string) (*models.EaterProfile, error) {
-	panic("unimplemented")
-}
-
 func (s *eaterSvcImpl) SignupEater(ctx context.Context, phoneNumber string) (string, error) {
 	phoneNumberExist := true
 
-	eater, err := s.eaterRepo.GetEaterProfile(ctx, phoneNumber)
+	eater, err := s.eaterRepo.GetEaterByPhoneNumber(ctx, phoneNumber)
 	if err != nil {
 		phoneNumberExist = false
 	}
+
 	if phoneNumberExist {
 		return s.handleExistingEater(ctx, eater.ID)
 	}
@@ -63,11 +55,12 @@ func (s *eaterSvcImpl) handleNewEater(ctx context.Context, phoneNumber string) (
 	var (
 		eaterID    = rand.UUID()
 		eaterName  = fmt.Sprintf("eater-%s", rand.NumericString(5))
-		salt       = crypto.GetEaterSalt()
+		salt       = crypto.GenerateSalt()
 		saltedPass = crypto.Combine(salt, phoneNumber)
 		passHash   = crypto.HashPassword(saltedPass)
 		now        = time.Now().UTC()
 	)
+
 	eater := models.Eater{
 		ID:           eaterID,
 		PhoneNumber:  phoneNumber,
@@ -76,7 +69,8 @@ func (s *eaterSvcImpl) handleNewEater(ctx context.Context, phoneNumber string) (
 		CreatedAt:    now,
 		UpdatedAt:    now,
 	}
-	eaterProfile := models.EaterProfile{
+
+	EaterProfile := models.EaterProfile{
 		EaterID:     eaterID,
 		PhoneNumber: phoneNumber,
 		Name:        eaterName,
@@ -88,34 +82,39 @@ func (s *eaterSvcImpl) handleNewEater(ctx context.Context, phoneNumber string) (
 	smsCode := models.EaterSmsCode{
 		EaterID:   eaterID,
 		Code:      rand.NumericString(5),
-		ExpiresIn: 300, //5minutes
+		ExpiresIn: 300,
 		CreatedAt: now,
 	}
+
 	err := s.eaterRepo.WithTx(ctx, func(r repositories.EaterRepository) error {
 		if err := r.SaveEater(ctx, &eater); err != nil {
 			return err
 		}
-		if err := r.SaveEaterProfile(ctx, &eaterProfile); err != nil {
+
+		if err := r.SaveEaterProfile(ctx, &EaterProfile); err != nil {
 			return err
 		}
+
 		if err := r.SaveEaterSmsCode(ctx, &smsCode); err != nil {
 			return err
 		}
+
 		return nil
 	})
 	if err != nil {
 		return "", err
-
 	}
 
-	smsMsg := fmt.Sprintf("food.uz Code: %s", smsCode.Code)
+	smsMsg := fmt.Sprintf("Food.uz Code: %s", smsCode.Code)
 	if err := s.smsClient.SendMessage(ctx, phoneNumber, smsMsg); err != nil {
 		return "", err
 	}
+
 	return eaterID, nil
+
 }
 
-func (s *eaterSvcImpl) handleExistingEater(ctx context.Context, eaterID string) {
+func (s *eaterSvcImpl) handleExistingEater(ctx context.Context, eaterID string) (string, error) {
 	eater, err := s.eaterRepo.GetEater(ctx, eaterID)
 	if err != nil {
 		return "", err
@@ -124,7 +123,7 @@ func (s *eaterSvcImpl) handleExistingEater(ctx context.Context, eaterID string) 
 	smsCode := models.EaterSmsCode{
 		EaterID:   eaterID,
 		Code:      rand.NumericString(5),
-		ExpiresIn: 300, //5minut
+		ExpiresIn: 300,
 		CreatedAt: time.Now(),
 	}
 
@@ -132,20 +131,30 @@ func (s *eaterSvcImpl) handleExistingEater(ctx context.Context, eaterID string) 
 		return "", err
 	}
 
-	smsMsg := fmt.Sprintf("food.uz Code: %s", smsCode.Code)
+	smsMsg := fmt.Sprintf("Food.uz Code: %s", smsCode.Code)
 	if err := s.smsClient.SendMessage(ctx, eater.PhoneNumber, smsMsg); err != nil {
 		return "", err
 	}
 
-	return eaterID, nil;
+	return eaterID, nil
+
 }
+
+func (s *eaterSvcImpl) ConfirmSMSCode(ctx context.Context, eaterID, code string) (*models.EaterProfile, error) {
+	//smsCode, err := s.eaterRepo.GetEaterSmsCode(ctx, eaterID, code)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//if smsCode.IsExpired() {
+	//	return nil, errors.New("code is expired")
+	//}
+	return nil, nil
 }
-func (s *eaterSvcImpl) ConfirmSMSCode(ctx context.Context, eaterID, code string) (*models.Eater, error) {
-	smsCode, err := s.eaterRepo.GetEaterSmsCode(ctx, eaterID, code)
-	if err != nil {
-		return nil, err
-	}
-	if smsCode.IsExpired() {
-		return nil, errors.New("code is expired")
-	}
+
+func (s *eaterSvcImpl) GetEaterProfile(ctx context.Context, eaterID string) (*models.EaterProfile, error) {
+	return nil, nil
+}
+
+func (s *eaterSvcImpl) UpdateEaterProfile(ctx context.Context, eaterID, name, imageUrl string) (*models.EaterProfile, error) {
+	return nil, nil
 }
