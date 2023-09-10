@@ -1,11 +1,12 @@
-package services
+package eater
 
 import (
 	"context"
 	"errors"
 	"fmt"
 
-	dtos "github.com/DevShuxat/eater-service/src/application/dtos/earter"
+	dtos "github.com/DevShuxat/eater-service/src/application/dtos/eater"
+	"github.com/DevShuxat/eater-service/src/domain/address/models"
 	"github.com/DevShuxat/eater-service/src/infrastructure/jwt"
 	"github.com/DevShuxat/eater-service/src/infrastructure/validator"
 )
@@ -18,7 +19,7 @@ type EaterApplicationService interface {
 }
 
 type eaterAppSvcImpl struct {
-	eaterSvc eatersvc.EaterService
+	eaterSvc *models.Eater
 	tokenSvc jwt.Service
 }
 

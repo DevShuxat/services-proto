@@ -16,7 +16,7 @@ const (
 type eaterRepoImpl struct {
 	db *gorm.DB
 }
-func NewRepository(db *gorm.DB) repositories.EaterRepository {
+func NewEaterRepository(db *gorm.DB) repositories.EaterRepository {
 	return &eaterRepoImpl{
 		db: db,
 	}
@@ -84,7 +84,7 @@ func (r *eaterRepoImpl) GetEaterProfile(ctx context.Context, eaterID string) (*m
 
 func (r *eaterRepoImpl) GetEaterSmsCode(ctx context.Context, eaterID string, code string) (*models.EaterSmsCode, error) {
 	var smsCode models.EaterSmsCode
-	result := r.db.WithContext(ctx).Table(tableEaterSmsCodes).Where(&smsCode, "eater_id = ? and code = ?", eaterID, code).First(&smsCode)
+	result := r.db.WithContext(ctx).Table(tableEaterSmsCodes).Where("eater_id = ? AND code = ?", eaterID, code).First(&smsCode)
 	if result.Error != nil {
 		return nil, result.Error
 	}

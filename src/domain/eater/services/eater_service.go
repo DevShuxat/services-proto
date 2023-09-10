@@ -2,12 +2,13 @@ package services
 
 import (
 	"context"
-	"crypto"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/DevShuxat/eater-service/src/domain/eater/models"
 	"github.com/DevShuxat/eater-service/src/domain/eater/repositories"
+	"github.com/DevShuxat/eater-service/src/infrastructure/crypto"
 	"github.com/DevShuxat/eater-service/src/infrastructure/rand"
 	"github.com/DevShuxat/eater-service/src/infrastructure/sms"
 	"go.uber.org/zap"
@@ -141,20 +142,48 @@ func (s *eaterSvcImpl) handleExistingEater(ctx context.Context, eaterID string) 
 }
 
 func (s *eaterSvcImpl) ConfirmSMSCode(ctx context.Context, eaterID, code string) (*models.EaterProfile, error) {
-	//smsCode, err := s.eaterRepo.GetEaterSmsCode(ctx, eaterID, code)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//if smsCode.IsExpired() {
-	//	return nil, errors.New("code is expired")
-	//}
+	smsCode, err := s.eaterRepo.GetEaterSmsCode(ctx, eaterID, code)
+	if err != nil {
+		return nil, err
+	}
+	if smsCode.isExpired() {
+		return nil, errors.New("code is expired")
+	}
 	return nil, nil
 }
 
 func (s *eaterSvcImpl) GetEaterProfile(ctx context.Context, eaterID string) (*models.EaterProfile, error) {
-	return nil, nil
+	eaterProfile, err := s.eaterRepo.GetEaterProfile(ctx, eaterID)
+	if err != nil {
+		return nil, err
+	}
+
+	if eaterProfile == nil {
+		return nil, errors.New("Eater profile not found")
+	}
+
+	return eaterProfile, nil
 }
 
 func (s *eaterSvcImpl) UpdateEaterProfile(ctx context.Context, eaterID, name, imageUrl string) (*models.EaterProfile, error) {
-	return nil, nil
+	eaterProfile, err := s.eaterRepo.GetEaterProfile(ctx, eaterID)
+	if err != nil {
+		return nil, err
+	}
+
+	if eaterProfile == nil {
+		return nil, errors.New("Eater profile not found")
+	}
+
+	eaterProfile.Name = name
+	eaterProfile.ImageUrl = imageUrl
+	eaterProfile.UpdatedAt = time.Now().UTC()
+
+	err = s.eaterRepo.UpdateEaterProfile(ctx, eaterProfile)
+	if err != nil {
+		return nil, err
+	}
+
+	return eaterProfile, nil
 }
+
