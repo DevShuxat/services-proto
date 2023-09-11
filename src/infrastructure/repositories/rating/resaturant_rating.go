@@ -17,9 +17,8 @@ type ratingRepoImpl struct {
 	db *gorm.DB
 }
 
-// ListRestaurantRating implements repositories.RestaurantRatingRepository.
 func (r *ratingRepoImpl) ListRestaurantRating(ctx context.Context, eaterID string) error {
-	var restaurant models.RestaurantRating
+var restaurant models.RestaurantRating
 	result := r.db.WithContext(ctx).Table(tableRating).First(&restaurant, "eater_id = ?", eaterID)
 	if result.Error != nil {
 		return nil, result.Error
@@ -27,7 +26,6 @@ func (r *ratingRepoImpl) ListRestaurantRating(ctx context.Context, eaterID strin
 	return &restaurant,
 }
 
-// RateRestaurant implements repositories.RestaurantRatingRepository.
 func (r *ratingRepoImpl) RateRestaurant(ctx context.Context, RestaurantID string, rating int, comment string) (*models.RestaurantRating, error) {
 	newRating := &models.RestaurantRating{
 		RestaurantID: RestaurantID,
@@ -45,7 +43,6 @@ func (r *ratingRepoImpl) RateRestaurant(ctx context.Context, RestaurantID string
 	return newRating, nil
 }
 
-// UpdateRestaurantRating implements repositories.RestaurantRatingRepository.
 func (r *ratingRepoImpl) UpdateRestaurantRating(ctx context.Context, restaurantRating *models.RestaurantRating) error {
 	panic("unimplemented")
 }

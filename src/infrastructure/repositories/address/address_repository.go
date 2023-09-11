@@ -17,7 +17,6 @@ type NewAddressRepository struct {
 	db *gorm.DB
 }
 
-// GetAddressById implements repositories.AddressRepository.
 func (r *NewAddressRepository) GetAddressById(ctx context.Context, id string) (*models.Address, error) {
 	var address models.Address
 	err := r.db.WithContext(ctx).Table(tableAddress).Where("id = ?", id).First(&address).Error

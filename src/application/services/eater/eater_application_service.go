@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	dtos "github.com/DevShuxat/eater-service/src/application/dtos/eater"
-	"github.com/DevShuxat/eater-service/src/domain/address/models"
+	"github.com/DevShuxat/eater-service/src/domain/eater/models"
 	"github.com/DevShuxat/eater-service/src/infrastructure/jwt"
 	"github.com/DevShuxat/eater-service/src/infrastructure/validator"
 )
@@ -24,7 +24,7 @@ type eaterAppSvcImpl struct {
 }
 
 func NewEaterApplicationService(
-	eaterSvc eatersvc.EaterService,
+	eaterSvc eaterSvc.EaterService,
 	tokenSvc jwt.Service,
 ) EaterApplicationService {
 	return &eaterAppSvcImpl{

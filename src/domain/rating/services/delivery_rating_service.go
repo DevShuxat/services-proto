@@ -17,71 +17,66 @@ type DeliveryRatingService interface {
 }
 
 type deliverySvcImpl struct {
-	 deliveryRepo repositories.DeliveryRatingRepository
+	deliveryRepo repositories.RatingRepository
 }
 
-func (s *deliverySvcImpl) RateDelivery(ctx context.Context,  orderID string, rating int, comment string) error {
-    // Implement rating logic here.
-    // Check if the eater has already rated this delivery.
-    existingRating, err := s.deliveryRepo.GetDeliveryRating(ctx,  orderID)
-    if err != nil {
-        return err
-    }
+func NewDeliveryRatingService(
+	ratingRepo repositories.RatingRepository,
+) DeliveryRatingService {
+	return &deliverySvcImpl{
+		ratingRepo: ratingRepo,
+	}
+}
+func (s *deliverySvcImpl) RateDelivery(ctx context.Context, orderID string, rating int, comment string) error {
+	existingRating, err := s.deliveryRepo.GetDeliveryRating(ctx, orderID)
+	if err != nil {
+		return err
+	}
 
-    if existingRating != nil {
-        return errors.New("eater can rate a delivered order only once")
-    }
+	if existingRating != nil {
+		return errors.New("eater can rate a delivered order only once")
+	}
 
-    // Create a new delivery rating entry.
-    deliveryRating := models.DeliveryRating{
-        OrderID:   orderID,
-        Rating:    rating,
-        Comment:   comment,
-        CreatedAt: time.Now().UTC(),
-    }
+	deliveryRating := models.DeliveryRating{
+		OrderID:   orderID,
+		Rating:    rating,
+		Comment:   comment,
+		CreatedAt: time.Now().UTC(),
+	}
 
-    if err := s.deliveryRepo.Save(ctx, &deliveryRating); err != nil {
-        return err
-    }
+	if err := s.deliveryRepo.Save(ctx, &deliveryRating); err != nil {
+		return err
+	}
 
-    return nil
+	return nil
 }
 
-func (s *deliverySvcImpl) UpdateDeliveryRating(ctx context.Context, orderID string, Rating int, Comment string) error {
-    existingRating, err := s.deliveryRepo.GetDeliveryRating(ctx, orderID)
-    if err != nil {
-        return err
-    }
+func (s *deliverySvcImpl) UpdateDeliveryRating(ctx context.Context, orderID string, rating int, comment string) error {
+	existingRating, err := s.deliveryRepo.GetDeliveryRating(ctx, orderID)
+	if err != nil {
+		return err
+	}
 
-    if existingRating == nil {
-        return errors.New("rating not found")
-    }
+	if existingRating == nil {
+		return errors.New("rating not found")
+	}
 
-    existingRating.Rating = Rating
-    existingRating.Comment = Comment
-    existingRating.CreatedAt = time.Now().UTC()
+	existingRating.Rating = rating
+	existingRating.Comment = comment
+	existingRating.UpdatedAt = time.Now().UTC()
 
-    if err := s.deliveryRepo.Update(ctx, existingRating); err != nil {
-        return err
-    }
+	if err := s.deliveryRepo.Update(ctx, existingRating); err != nil {
+		return err
+	}
 
-    return nil
-}
-
-func (s *deliverySvcImpl) ListDeliveryRatingsByEater(ctx context.Context, eaterID string) ([]*DeliveryRating, error) {
-    ratings, err := s.deliveryRepo.GetDeliveryRating(ctx, eaterID)
-    if err != nil {
-        return nil, err
-    }
-
-    return ratings, nil
+	return nil
 }
 
 func (s *deliverySvcImpl) GetDeliveryRating(ctx context.Context, orderID string) ([]*DeliveryRating, error) {
-    rating, err := s.deliveryRepo.GetDeliveryRating(ctx, orderID)
-    if err != nil {
-        return nil, err
-    }
+	rating, err := s.deliveryRepo.GetDeliveryRating(ctx, orderID)
+	if err != nil {
+		return nil, err
+	}
 
-    return rating, nil
+	return rating, nil
 }

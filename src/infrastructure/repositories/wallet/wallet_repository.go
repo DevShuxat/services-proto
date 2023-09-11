@@ -16,7 +16,6 @@ type walletRepoImpl struct {
 	db *gorm.DB
 }
 
-// AddCard implements repositories.WalletRepository.
 func (r *walletRepoImpl) AddCard(ctx context.Context, CardToken string, Number string) (*models.PaymentCard, error) {
 	newCard := &models.PaymentCard{
 		CardToken: CardToken,
@@ -32,7 +31,6 @@ func (r *walletRepoImpl) AddCard(ctx context.Context, CardToken string, Number s
 }
 
 
-// DeleteCard implements repositories.WalletRepository.
 func (r *walletRepoImpl) DeleteCard(ctx context.Context, ID string) error {
  var wallet *models.PaymentCard
  result := r.db.WithContext(ctx).Table(tableWallet).Delete(&wallet, "id = ?", ID)
@@ -42,7 +40,6 @@ func (r *walletRepoImpl) DeleteCard(ctx context.Context, ID string) error {
 	return nil
 }
 
-// GetCard implements repositories.WalletRepository.0-po
 func (r *walletRepoImpl) GetCard(ctx context.Context, ID string) (*models.PaymentCard, error) {
 	var wallet *models.PaymentCard
 	result := r.db.WithContext(ctx).Table(tableWallet).First(&wallet, "id = ?", ID)
@@ -52,7 +49,6 @@ func (r *walletRepoImpl) GetCard(ctx context.Context, ID string) (*models.Paymen
 	return &wallet, 
 }
 
-// ListCard implements repositories.WalletRepository.
 func (r *walletRepoImpl) ListCard(ctx context.Context, eaterID string) (*models.PaymentCard, error) {
 	var wallet models.PaymentCard
 	result := r.db.WithContext(ctx).Table(tableWallet).Where("eater_id = ?", eaterID).Find(&wallet)

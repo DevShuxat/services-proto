@@ -22,6 +22,12 @@ type addressSvcImpl struct {
 	addressRepo repositories.AddressRepository
 }
 
+func NewAddressService(addressRepo repositories.AddressRepository) AddressService {
+    return &addressSvcImpl{
+        addressRepo: addressRepo,
+    }
+}
+
 func (s *addressSvcImpl) GetAddress(ctx context.Context, ID string) (*models.Address, error) {
     address, err := s.addressRepo.GetAddress(ctx, ID)
     if err != nil {
@@ -30,13 +36,6 @@ func (s *addressSvcImpl) GetAddress(ctx context.Context, ID string) (*models.Add
 
     return &address, nil
 }
-
-func NewAddressService(addressRepo repositories.AddressRepository) AddressService {
-    return &addressSvcImpl{
-        addressRepo: addressRepo,
-    }
-}
-
 
 func (s *addressSvcImpl) CreateAddress(ctx context.Context, addressID, EaterID, name string, Latitude, Longitude float64) (string, error) {
   location := &models.Location{
@@ -60,7 +59,7 @@ func (s *addressSvcImpl) CreateAddress(ctx context.Context, addressID, EaterID, 
     return nil
   })
   if err != nil {
-    return nil, err
+    return models.Address{}, err
   }
   return &address, nil
 }
@@ -88,7 +87,7 @@ func (s *addressSvcImpl) UpdateAddress(ctx context.Context, address *models.Addr
     })
 
     if err != nil {
-        return nil, err
+        return &models.Address{}, err
     }
 
     return &existingAddress, nil

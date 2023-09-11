@@ -18,10 +18,6 @@ type WalletRepository interface {
 	ListCard(ctx context.Context, ID string) (*models.PaymentCard, error)
 }
 
-type WalletService interface { 
-	GetCard(ctx context.Context, ID string) (*models.PaymentCard, error) 
-}
-
 type paymentSvcImpl struct {
 	walletRepo repositories.WalletRepository
 }
@@ -30,12 +26,11 @@ func NewWalletService(
 	walletRepo repositories.WalletRepository,
 ) WalletService {
 	return &paymentSvcImpl{
-		walletRepo: walletRepo, 
+		walletRepo: walletRepo,
 	}
 }
-// AddCard adds to wallet and returns
 func (s *paymentSvcImpl) AddCard(ctx context.Context, CardToken string, Number string) (*models.PaymentCard, error) {
-isVerified := true
+	isVerified := true
 
 	card, err := s.walletRepo.GetCard(ctx, Number)
 	if err != nil {
@@ -51,20 +46,20 @@ isVerified := true
 
 func (s *paymentSvcImpl) handleNewWallet(ctx context.Context, Number string, CardToken string) (string, error) {
 	var (
-		id        = rand.UUID()
-		eaterID   = rand.UUID()
-		number    = fmt.Sprintf("eater-%s", rand.NumericString(5))
-		cardToken = fmt.Sprintf("card-%s", rand.NumericString(10))
-		isVerified = true 
-		now       = time.Now().UTC()
+		id         = rand.UUID()
+		eaterID    = rand.UUID()
+		number     = fmt.Sprintf("eater-%s", rand.NumericString(5))
+		cardToken  = fmt.Sprintf("card-%s", rand.NumericString(10))
+		isVerified = true
+		now        = time.Now().UTC()
 	)
 	payment := &models.PaymentCard{
-		ID:        id,
-		EaterID:   eaterID,
-		Number:    number,
-		CardToken: cardToken,
-		IsVerified: isVerified, 
-		CreatedAt: now,
+		ID:         id,
+		EaterID:    eaterID,
+		Number:     number,
+		CardToken:  cardToken,
+		IsVerified: isVerified,
+		CreatedAt:  now,
 	}
 
 	err := s.walletRepo.WithTx(ctx, func(r repositories.WalletRepository) error {
@@ -75,7 +70,11 @@ func (s *paymentSvcImpl) handleNewWallet(ctx context.Context, Number string, Car
 	})
 	if err != nil {
 		return "", err
+	}
+	return eaterID, nil
+
 }
+
 func (s *paymentSvcImpl) handleExistingWallet(ctx context.Context, CardToken string) (string, error) {
 	eater, err := s.walletRepo.GetCard(ctx, CardToken)
 	if err != nil {
@@ -92,6 +91,3 @@ func (s *paymentSvcImpl) GetCard(ctx context.Context, ID string) (*models.Paymen
 	}
 	return card, nil
 }
-
-
-
