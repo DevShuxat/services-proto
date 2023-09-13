@@ -7,7 +7,6 @@ import (
 )
 
 type RatingRepository interface {
-	WithTx(ctx context.Context, f func(r *RatingRepository) error) error
 	RateDelivery(ctx context.Context, orderID string, rating int, comment string) (string, error)
 	UpdateDelivery(ctx context.Context, orderID string) ([]*models.DeliveryRating, error)
 	ListDelivery(ctx context.Context, eaterID string) ([]*models.DeliveryRating, error)

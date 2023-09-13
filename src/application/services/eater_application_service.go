@@ -1,12 +1,11 @@
-package eater
-
+package services
 import (
 	"context"
 	"errors"
 	"fmt"
 
 	dtos "github.com/DevShuxat/eater-service/src/application/dtos/eater"
-	"github.com/DevShuxat/eater-service/src/domain/eater/models"
+	EaterService "github.com/DevShuxat/eater-service/src/domain/eater/services"
 	"github.com/DevShuxat/eater-service/src/infrastructure/jwt"
 	"github.com/DevShuxat/eater-service/src/infrastructure/validator"
 )
@@ -19,12 +18,12 @@ type EaterApplicationService interface {
 }
 
 type eaterAppSvcImpl struct {
-	eaterSvc *models.Eater
+	eaterSvc EaterService.EaterService
 	tokenSvc jwt.Service
 }
 
 func NewEaterApplicationService(
-	eaterSvc eaterSvc.EaterService,
+	eaterSvc EaterService.EaterService,
 	tokenSvc jwt.Service,
 ) EaterApplicationService {
 	return &eaterAppSvcImpl{

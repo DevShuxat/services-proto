@@ -22,21 +22,6 @@ func NewEaterRepository(db *gorm.DB) repositories.EaterRepository {
 	}
 }
 
-func (r *eaterRepoImpl) WithTx(ctx context.Context, callback func(r repositories.EaterRepository) error) error {
-	if err := r.db.Transaction(func(tx *gorm.DB) error {
-		r := eaterRepoImpl{
-			db: tx,
-		}
-		if err := callback(&r); err != nil {
-			return err
-		}
-		return nil
-	}); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (r *eaterRepoImpl) DeleteEater(ctx context.Context, eaterID string) error {
 	var eater models.Eater
 	result := r.db.WithContext(ctx).Table(tableEaters).Delete(&eater, "id = ?", eaterID)

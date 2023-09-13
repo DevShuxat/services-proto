@@ -12,4 +12,5 @@ type WalletRepository interface {
 	GetCard(ctx context.Context, ID string) error
 	DeleteCard(ctx context.Context, ID string) error
 	ListCard(ctx context.Context, ID string) (*models.PaymentCard, error)
+	ListCardsByEater(ctx context.Context, eaterID string) ([]*models.PaymentCard, error)
 }

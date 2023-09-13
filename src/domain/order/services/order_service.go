@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"time"
 
 	"github.com/DevShuxat/eater-service/src/domain/order/models"
 	"github.com/DevShuxat/eater-service/src/domain/order/repositories"
@@ -9,12 +10,12 @@ import (
 )
 
 type OrderService interface {
-	CreateOrder(ctx context.Context, order models.Order) error
-	UpdateOrder(ctx context.Context, order models.Order) error
-	UpdateOrderStatus(ctx context.Context, order models.Order) error
-	UpdateOrderPaymentStatus(ctx context.Context, order models.Order)
+SaveOrder(ctx context.Context, order *models.Order) error
+	UpdateOrder(ctx context.Context, order *models.Order) error
+	UpdateOrderStatus(ctx context.Context, orderID, newStatus string, time time.Time) error
+	UpdateOrderPaymentStatus(ctx context.Context, orderID, newPaymentStatus string, time time.Time) error
 	GetOrder(ctx context.Context, orderID string) (*models.Order, error)
-	ListOrders(ctx context.Context, eaterID string) ([]*models.Order, error)
+	ListOrder(ctx context.Context, eaterID string, sort string, page, pageSize int) ([]*models.Order, error)
 	DeleteOrder(ctx context.Context, orderID string) error
 }
 

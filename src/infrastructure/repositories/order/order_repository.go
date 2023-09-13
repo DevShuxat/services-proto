@@ -57,10 +57,10 @@ func (r *NewOrderRepository) ListOrder(ctx context.Context, eaterID string, sort
 	return orders, nil
 }
 
-func (r *NewOrderRepository) UpdateOrder(ctx context.Context, order *models.Order) error {
-	result := r.db.WithContext(ctx).Save(order)
-	if result.Error != nil {
-		return result.Error
+func (s *NewOrderRepository) UpdateOrder(ctx context.Context, order *models.Order) error {
+	result := r.db.WithContext(ctx).Table(tableOrder ).Save(order)
+	if result.Error() != nil {
+		return result.Error()
 	}
 	return nil
 }

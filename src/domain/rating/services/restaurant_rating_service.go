@@ -53,7 +53,7 @@ func (s *rateRestaurantSvcImpl) UpdateRestaurantRating(ctx context.Context, eate
 		return models.RestaurantRating{}, errors.New("Restaurant ID is required for updating")
 	}
 
-	existingRating, err := s.ratingRepo.RateRestaurant(ctx, RestaurantID)
+	existingRating, err := s.ratingRepo.RateRestaurant(ctx, eaterID string, RestaurantID string, comment string, rating int) (models.RestaurantRating, error)
 	if err != nil {
 		return models.RestaurantRating{}, err
 	}

@@ -6,8 +6,8 @@ type ListAddressResponse struct {
 	EaterID *models.Address `json:"address_by_eater_id"`
 }
 
-func NewListAddressResponse(EaterID string) *ListAddressResponse {
+func NewListAddressResponse(eaterID string) *ListAddressResponse {
 	return &ListAddressResponse{
-		ListAddress: EaterID,
+		EaterID: eaterID,
 	}
 }
