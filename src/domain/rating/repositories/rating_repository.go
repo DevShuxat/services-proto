@@ -7,11 +7,8 @@ import (
 )
 
 type RatingRepository interface {
-	RateDelivery(ctx context.Context, orderID string, rating int, comment string) (string, error)
-	UpdateDelivery(ctx context.Context, orderID string) ([]*models.DeliveryRating, error)
+	RateDelivery(ctx context.Context, order *models.DeliveryRating) error
+	UpdateDelivery(ctx context.Context, orderID *models.DeliveryRating) error
 	ListDelivery(ctx context.Context, eaterID string) ([]*models.DeliveryRating, error)
 	GetDeliveryRating(ctx context.Context, orderID string) ([]*models.DeliveryRating, error)
-	RateRestaurant(ctx context.Context, eaterID, RestaurantID, comment string, rating int) (models.RestaurantRating, error)
-	UpdateRestaurantRating(ctx context.Context, eaterID, RestaurantID, comment string, rating int) (models.RestaurantRating, error)
-	ListRestaurantRating(ctx context.Context, eaterID string) error
 }

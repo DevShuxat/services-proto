@@ -15,11 +15,11 @@ type ResturantRatingService interface {
 	ListRestaurantRating(ctx context.Context, eaterID string) error
 }
 type rateRestaurantSvcImpl struct {
-	ratingRepo repositories.RatingRepository
+	ratingRepo repositories.RestaurantRatingRepository
 }
 
 func NewRateRestaurantService(
-	ratingRepo repositories.RatingRepository,
+	ratingRepo repositories.RestaurantRatingRepository,
 ) ResturantRatingService {
 	return &rateRestaurantSvcImpl{
 		ratingRepo: ratingRepo,
@@ -53,7 +53,7 @@ func (s *rateRestaurantSvcImpl) UpdateRestaurantRating(ctx context.Context, eate
 		return models.RestaurantRating{}, errors.New("Restaurant ID is required for updating")
 	}
 
-	existingRating, err := s.ratingRepo.RateRestaurant(ctx, eaterID string, RestaurantID string, comment string, rating int) (models.RestaurantRating, error)
+	existingRating, err := s.ratingRepo.UpdateRestaurantRating(ctx, eaterID)
 	if err != nil {
 		return models.RestaurantRating{}, err
 	}
@@ -62,22 +62,15 @@ func (s *rateRestaurantSvcImpl) UpdateRestaurantRating(ctx context.Context, eate
 	existingRating.Comment = comment
 	existingRating.UpdatedAt = time.Now().UTC()
 
-	err = s.ratingRepo.WithTx(ctx, func(r repositories.RatingRepository) error {
-		if err := r.UpdateRestaurantRating(ctx, existingRating); err != nil {
+	
+		if err := s.ratingRepo.UpdateRestaurantRating(ctx, existingRating); err != nil {
 			return err
 		}
-		return nil
-	})
-
-	if err != nil {
-		return models.RestaurantRating{}, err
-	}
-
 	return &existingRating, nil
 }
 
-func (s *rateRestaurantSvcImpl) ListRestaurantRating(ctx context.Context, eaterID string) ([]models.RestaurantRating, error) {
-	ratings, err := s.ratingRepo.ListRestaurantRating(ctx, eaterID)
+func (s *rateRestaurantSvcImpl) ListRestaurantRating(ctx context.Context, eaterID string) error {
+	ratings, err := s.ratingRepo.ListRestaurantRating(ctx, eaterID, )
 	if err != nil {
 		return nil, err
 	}

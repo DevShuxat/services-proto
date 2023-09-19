@@ -2,21 +2,30 @@ package order
 
 import (
 	"context"
+	"time"
+
 	"github.com/DevShuxat/eater-service/src/domain/order/models"
 	"github.com/DevShuxat/eater-service/src/domain/order/repositories"
+	"github.com/DevShuxat/eater-service/src/infrastructure/utils"
 	"gorm.io/gorm"
 )
 
 const (
-	tableOrder = "orders"
+	tableOrder = "eater.orders"
 )
 
-type NewOrderRepository struct {
+type orderSvcImpl struct {
 	db *gorm.DB
 }
 
+func NewAddressRepository(db *gorm.DB) repositories.OrderRepository {
+	return &orderSvcImpl{
+		db: db,
+	}
+}
 
-func (r *NewOrderRepository) CreateOrder(ctx context.Context, order *models.Order) error {
+
+func (r *orderSvcImpl) SaveOrder(ctx context.Context, order *models.Order) error {
 	err := r.db.WithContext(ctx).Create(order).Error
 	if err != nil {
 		return err
@@ -24,68 +33,71 @@ func (r *NewOrderRepository) CreateOrder(ctx context.Context, order *models.Orde
 	return nil
 }
 
-func (r *NewOrderRepository) DeleteOrder(ctx context.Context, id string) error {
-	result := r.db.WithContext(ctx).Delete(&models.Order{}, "id = ?", id)
+func (r *orderSvcImpl) GetOrder(ctx context.Context, orderID string) (*models.Order, error) {
+	var order *models.Order
+	result := r.db.WithContext(ctx).Table(tableOrder).First(&order, "id = ?", orderID)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return order, nil
+}
+
+// func (r *orderSvcImpl) ListOrder(ctx context.Context, eaterID string, sortByDateDesc bool) ([]models.Order, error) {
+// 	var orders []models.Order
+// 	query := r.db.WithContext(ctx).Table(tableOrder).Where("eater_id = ?", eaterID)
+// 	if sortByDateDesc {
+// 		query = query.Order("created_date desc")
+// 	} else {
+// 		query = query.Order("created_date asc")
+// 	}
+// 	if err := query.Find(&orders).Error; err != nil {
+// 		return nil, err
+// 	}
+// 	return orders, nil
+// }
+
+func (r *orderSvcImpl) UpdateOrder(ctx context.Context, order *models.Order) error {
+	result := r.db.WithContext(ctx).Table(tableOrder).Save(order)
 	if result.Error != nil {
 		return result.Error
 	}
 	return nil
 }
 
-func (r *NewOrderRepository) GetOrder(ctx context.Context, orderID string) (*models.Order, error) {
-	var order models.Order
-	result := r.db.WithContext(ctx).First(&order, "id = ?", orderID)
+func (r *orderSvcImpl) UpdateOrderPaymentStatus(ctx context.Context, orderID, newPaymentStatus string, time time.Time) error {
+	result := r.db.WithContext(ctx).Table(tableOrder).Where("id = ?", orderID).Save("payment_status")
 	if result.Error != nil {
-		return nil, result.Error
+		return result.Error
 	}
-	return &order, nil
+	return nil
 }
 
-func (r *NewOrderRepository) ListOrder(ctx context.Context, eaterID string, sortByDateDesc bool) ([]models.Order, error) {
-	var orders []models.Order
-	query := r.db.WithContext(ctx).Table(tableOrder).Where("eater_id = ?", eaterID)
-
-	if sortByDateDesc {
-		query = query.Order("created_date desc")
-	} else {
-		query = query.Order("created_date asc")
+func (r *orderSvcImpl) UpdateOrderStatus(ctx context.Context, orderID, newStatus string, time time.Time) error {
+	result := r.db.WithContext(ctx).Table(tableOrder).Where("id = ?", orderID).Save("status")
+	if result.Error != nil {
+		return result.Error
 	}
+	return nil
+}
 
-	if err := query.Find(&orders).Error; err != nil {
-		return nil, err
+func (r *orderSvcImpl) ListOrderByEater(ctx context.Context, eaterID string, sort string, page, pageSize int) ([]*models.Order, error) {
+	var orders []*models.Order
+	result := r.db.WithContext(ctx).Table(tableOrder).Where("eater_id = ?", eaterID).
+	Scopes(utils.Paginate(page, pageSize), utils.Sort(sort)).
+	Find(&orders)
+	if result.Error != nil {
+		return nil, result.Error
 	}
 	return orders, nil
 }
 
-func (s *NewOrderRepository) UpdateOrder(ctx context.Context, order *models.Order) error {
-	result := r.db.WithContext(ctx).Table(tableOrder ).Save(order)
-	if result.Error() != nil {
-		return result.Error()
-	}
-	return nil
-}
-
-func (r *NewOrderRepository) UpdateOrderPaymentStatus(ctx context.Context, orderID string, paymentStatus string) error {
-	result := r.db.WithContext(ctx).Model(&models.Order{}).Where("id = ?", orderID).Update("payment_status", paymentStatus)
+func (r *orderSvcImpl) DeleteOrder(ctx context.Context, orderID string) error {
+	var order models.Order
+	result := r.db.WithContext(ctx).Table(tableOrder).Delete(&order, "id = ?", orderID)
 	if result.Error != nil {
 		return result.Error
 	}
 	return nil
 }
 
-func (r *NewOrderRepository) UpdateOrderStatus(ctx context.Context, orderID string, status string) error {
-	result := r.db.WithContext(ctx).Model(&models.Order{}).Where("id = ?", orderID).Update("status", status)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
-}
 
-func (r *NewOrderRepository) WithTx(ctx context.Context, callback func(r repositories.OrderRepository) error) error {
-	return r.db.Transaction(func(tx *gorm.DB) error {
-		r := NewOrderRepository{
-			db: tx,
-		}
-		return callback(&r)
-	})
-}

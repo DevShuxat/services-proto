@@ -17,3 +17,8 @@ type Address struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+// Error implements error.
+func (*Address) Error() string {
+	panic("unimplemented")
+}

@@ -10,7 +10,7 @@ type EaterRepository interface {
 	WithTx(ctx context.Context, f func(r EaterRepository) error) error
 	SaveEater(ctx context.Context, eater *models.Eater) error
 	UpdateEater(ctx context.Context, eater *models.Eater) error
-	DeleteEater(ctx context.Context, eaterID string) 
+	DeleteEater(ctx context.Context, eaterID string) error
 	GetEater(ctx context.Context, eaterID string) (*models.Eater, error)
 	GetEaterByPhoneNumber(ctx context.Context, phoneNumber string) (*models.Eater, error)
 	SaveEaterSmsCode(ctx context.Context, smsCode *models.EaterSmsCode) error

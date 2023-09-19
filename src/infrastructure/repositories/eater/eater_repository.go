@@ -16,10 +16,26 @@ const (
 type eaterRepoImpl struct {
 	db *gorm.DB
 }
+
 func NewEaterRepository(db *gorm.DB) repositories.EaterRepository {
 	return &eaterRepoImpl{
 		db: db,
 	}
+}
+
+func (r *eaterRepoImpl) WithTx(ctx context.Context, f func(r repositories.EaterRepository) error) error {
+if err := r.db.Transaction(func(tx *gorm.DB) error {
+	r := eaterRepoImpl{
+		db: tx,
+	}
+	if err := f(&r); err != nil {
+		return err
+	}
+	return nil
+}); err != nil {
+	return err
+}
+return nil
 }
 
 func (r *eaterRepoImpl) DeleteEater(ctx context.Context, eaterID string) error {
@@ -41,55 +57,55 @@ func (r *eaterRepoImpl) DeleteEaterProfile(ctx context.Context, eaterID string) 
 }
 
 func (r *eaterRepoImpl) GetEater(ctx context.Context, eaterID string) (*models.Eater, error) {
-var eater models.Eater
-result := r.db.WithContext(ctx).Table(tableEaters).First(&eater, "id = ?", eaterID)
-if result.Error != nil {
-	return nil, result.Error
-}
-return &eater, nil
+	var eater *models.Eater
+	result := r.db.WithContext(ctx).Table(tableEaters).First(&eater, "id = ?", eaterID)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return eater, nil
 }
 
 func (r *eaterRepoImpl) GetEaterByPhoneNumber(ctx context.Context, phoneNumber string) (*models.Eater, error) {
-	var eater models.Eater
+	var eater *models.Eater
 	result := r.db.WithContext(ctx).Table(tableEaters).First(&eater, "phoneNumber = ?", phoneNumber)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return &eater, nil
+	return eater, nil
 }
 
 func (r *eaterRepoImpl) GetEaterProfile(ctx context.Context, eaterID string) (*models.EaterProfile, error) {
-	var eater models.EaterProfile
+	var eater *models.EaterProfile
 	result := r.db.WithContext(ctx).Table(tableEaterProfiles).First(&eater, "eaterID = ?", eaterID)
-	if result.Error !=nil {
+	if result.Error != nil {
 		return nil, result.Error
 	}
-	return &eater, nil
+	return eater, nil
 }
 
 func (r *eaterRepoImpl) GetEaterSmsCode(ctx context.Context, eaterID string, code string) (*models.EaterSmsCode, error) {
-	var smsCode models.EaterSmsCode
+	var smsCode *models.EaterSmsCode
 	result := r.db.WithContext(ctx).Table(tableEaterSmsCodes).Where("eater_id = ? AND code = ?", eaterID, code).First(&smsCode)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return &smsCode, nil
+	return smsCode, nil
 }
 
 func (r *eaterRepoImpl) SaveEater(ctx context.Context, eater *models.Eater) error {
 	result := r.db.WithContext(ctx).Table(tableEaters).Create(eater)
 	if result.Error != nil {
 		return result.Error
-}
-return nil
+	}
+	return nil
 }
 
 func (r *eaterRepoImpl) SaveEaterProfile(ctx context.Context, profile *models.EaterProfile) error {
- result := r.db.WithContext(ctx).Table(tableEaterProfiles).Create(profile) 
- if result.Error != nil {
-	return result.Error
- }
- return nil
+	result := r.db.WithContext(ctx).Table(tableEaterProfiles).Create(profile)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }
 
 func (r *eaterRepoImpl) SaveEaterSmsCode(ctx context.Context, smsCode *models.EaterSmsCode) error {
@@ -123,5 +139,3 @@ func (r *eaterRepoImpl) UpdateEaterProfilePhoneNumberConfirmed(ctx context.Conte
 	}
 	return nil
 }
-
-

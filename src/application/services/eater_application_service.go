@@ -1,4 +1,5 @@
 package services
+
 import (
 	"context"
 	"errors"
@@ -34,7 +35,7 @@ func NewEaterApplicationService(
 
 func (s *eaterAppSvcImpl) SignupEater(ctx context.Context, phoneNumber string) (*dtos.EaterSignupResponse, error) {
 	if !validator.ValidateUzPhoneNumber(phoneNumber) {
-		return nil, errors.New("invalid phonr number. ")
+		return nil, errors.New("invalid phone number. ")
 	}
 	eaterId, err := s.eaterSvc.SignupEater(ctx, phoneNumber)
 	if err != nil {

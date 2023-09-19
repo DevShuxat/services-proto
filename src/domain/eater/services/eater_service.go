@@ -142,13 +142,13 @@ func (s *eaterSvcImpl) handleExistingEater(ctx context.Context, eaterID string) 
 }
 
 func (s *eaterSvcImpl) ConfirmSMSCode(ctx context.Context, eaterID, code string) (*models.EaterProfile, error) {
-	smsCode, err := s.eaterRepo.GetEaterSmsCode(ctx, eaterID, code)
-	if err != nil {
-		return nil, err
-	}
-	if smsCode.isExpired() {
-		return nil, errors.New("code is expired")
-	}
+	// smsCode, err := s.eaterRepo.GetEaterSmsCode(ctx, eaterID, code)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// if smsCode.isExpired() {
+	// 	return nil, errors.New("code is expired")
+	// }
 	return nil, nil
 }
 

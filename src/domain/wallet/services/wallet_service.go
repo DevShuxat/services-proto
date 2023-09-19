@@ -2,20 +2,18 @@ package services
 
 import (
 	"context"
-	"fmt"
-	"time"
 
 	"github.com/DevShuxat/eater-service/src/domain/wallet/models"
 	"github.com/DevShuxat/eater-service/src/domain/wallet/repositories"
-	"github.com/DevShuxat/eater-service/src/infrastructure/rand"
+	"github.com/DevShuxat/eater-service/src/infrastructure/utils"
 )
 
-type WalletRepository interface {
-	WithTx(ctx context.Context, f func(r WalletRepository) error) error
-	AddCard(ctx context.Context, CardToken string, Number string) (*models.PaymentCard, error)
-	GetCard(ctx context.Context, ID string) error
-	DeleteCard(ctx context.Context, ID string) error
-	ListCard(ctx context.Context, ID string) (*models.PaymentCard, error)
+type WalletService interface {
+	AddCard(ctx context.Context, CardToken string, Number string) ([]*models.PaymentCard, error)
+	GetCard(ctx context.Context, cardID string) (*models.PaymentCard, error)
+	DeleteCard(ctx context.Context, cardID string) error
+	ListCard(ctx context.Context, cardID string, sort string, page, pageSize int) ([]*models.PaymentCard, error)
+	ListCardsByEater(ctx context.Context, eaterID string) ([]*models.PaymentCard, error)
 }
 
 type paymentSvcImpl struct {
@@ -29,65 +27,51 @@ func NewWalletService(
 		walletRepo: walletRepo,
 	}
 }
-func (s *paymentSvcImpl) AddCard(ctx context.Context, CardToken string, Number string) (*models.PaymentCard, error) {
-	isVerified := true
 
-	card, err := s.walletRepo.GetCard(ctx, Number)
+func (s *paymentSvcImpl) 	AddCard(ctx context.Context, CardToken string, Number string) ([]*models.PaymentCard, error){
+	paymentCard, err := s.walletRepo.AddCard(ctx, CardToken, Number)
 	if err != nil {
-		isVerified = false
+		return paymentCard, err
 	}
-
-	if isVerified {
-		return s.handleExistingWallet(ctx, CardToken)
-	}
-	return s.handleNewWallet(ctx, Number, CardToken)
-
+	return paymentCard, nil
 }
 
-func (s *paymentSvcImpl) handleNewWallet(ctx context.Context, Number string, CardToken string) (string, error) {
-	var (
-		id         = rand.UUID()
-		eaterID    = rand.UUID()
-		number     = fmt.Sprintf("eater-%s", rand.NumericString(5))
-		cardToken  = fmt.Sprintf("card-%s", rand.NumericString(10))
-		isVerified = true
-		now        = time.Now().UTC()
-	)
-	payment := &models.PaymentCard{
-		ID:         id,
-		EaterID:    eaterID,
-		Number:     number,
-		CardToken:  cardToken,
-		IsVerified: isVerified,
-		CreatedAt:  now,
-	}
-
-	err := s.walletRepo.WithTx(ctx, func(r repositories.WalletRepository) error {
-		if _, err := r.AddCard(ctx, Number, CardToken); err != nil {
-			return err
-		}
-		return nil
-	})
+func (s *paymentSvcImpl) DeleteCard(ctx context.Context, cardID string) error {
+	err := s.walletRepo.DeleteCard(ctx, cardID)
 	if err != nil {
-		return "", err
+		return err
 	}
-	return eaterID, nil
-
+	return nil
 }
 
-func (s *paymentSvcImpl) handleExistingWallet(ctx context.Context, CardToken string) (string, error) {
-	eater, err := s.walletRepo.GetCard(ctx, CardToken)
-	if err != nil {
-		return "", err
-	}
-	return cardToken, nil
-
-}
-
-func (s *paymentSvcImpl) GetCard(ctx context.Context, ID string) (*models.PaymentCard, error) {
-	card, err := s.walletRepo.GetCard(ctx, ID)
+func (s *paymentSvcImpl) GetCard(ctx context.Context, cardID string) (*models.PaymentCard, error) {
+	var paymentCard models.PaymentCard
+	err := s.walletRepo.GetCard(ctx, cardID)
 	if err != nil {
 		return nil, err
 	}
-	return card, nil
+	return &paymentCard, nil
+}
+
+func (s *paymentSvcImpl) ListCardsByEater(ctx context.Context, eaterID string) ([]*models.PaymentCard, error) {
+	paymentCards, err := s.walletRepo.ListCardsByEater(ctx, eaterID)
+	if err != nil {
+		return nil, err
+	}
+	return paymentCards, nil
+}
+
+func (s *paymentSvcImpl) ListCard(ctx context.Context, cardID string, sort string, page, pageSize int) ([]*models.PaymentCard, error) {
+	result := s.walletRepo.ListCard(ctx, cardID)
+	if err != nil {
+		return nil, err
+	}
+	result = result.Scopes(utils.Sort(sort))
+	result = result.Scopes(utils.Paginate(page, pageSize))
+
+	paymentCards, err := result.FindPaymentCards()
+	if err != nil {
+		return nil, err
+	}
+	return paymentCards, nil
 }
