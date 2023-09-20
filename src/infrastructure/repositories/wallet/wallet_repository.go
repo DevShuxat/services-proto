@@ -23,10 +23,10 @@ func NewRepository(db *gorm.DB) repositories.WalletRepository {
 	}
 }
 
-func (r *walletRepo) AddCard(ctx context.Context, CardToken string, Number string) ([]*models.PaymentCard, error) {
-	result := r.db.WithContext(ctx).Table(tableWallet).Create(&CardToken)
+func (r *walletRepo) AddCard(ctx context.Context, paymentCardR *models.PaymentCard)  error {
+	result := r.db.WithContext(ctx).Table(tableWallet).Create(&paymentCardR)
 	if result.Error != nil {
-		return nil, result.Error
+		return result.Error
 	}
 	return  nil
 }
@@ -40,13 +40,13 @@ func (r *walletRepo) DeleteCard(ctx context.Context, cardID string) error {
 	return nil
 }
 
-func (r *walletRepo) GetCard(ctx context.Context, cardID string) error {
+func (r *walletRepo) GetCard(ctx context.Context, cardID string) ([]*models.PaymentCard,error){
 	var paymentCard *models.PaymentCard
 	result := r.db.WithContext(ctx).Table(tableWallet).First(&paymentCard, "id = ?", cardID)
 	if result.Error != nil {
-		return result.Error
+		return nil, result.Error
 	}
-	return nil
+	return nil, nil
 }
 
 func (r *walletRepo) ListCardsByEater(ctx context.Context, eaterID string) ([]*models.PaymentCard, error) {

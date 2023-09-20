@@ -2,14 +2,16 @@ package services
 
 import (
 	"context"
+	"time"
 
 	"github.com/DevShuxat/eater-service/src/domain/wallet/models"
 	"github.com/DevShuxat/eater-service/src/domain/wallet/repositories"
+	"github.com/DevShuxat/eater-service/src/infrastructure/rand"
 	"github.com/DevShuxat/eater-service/src/infrastructure/utils"
 )
 
 type WalletService interface {
-	AddCard(ctx context.Context, CardToken string, Number string) ([]*models.PaymentCard, error)
+	AddCard(ctx context.Context, CardToken, EaterID string, Number string,IsVerified bool) ([]*models.PaymentCard, error)
 	GetCard(ctx context.Context, cardID string) (*models.PaymentCard, error)
 	DeleteCard(ctx context.Context, cardID string) error
 	ListCard(ctx context.Context, cardID string, sort string, page, pageSize int) ([]*models.PaymentCard, error)
@@ -28,12 +30,20 @@ func NewWalletService(
 	}
 }
 
-func (s *paymentSvcImpl) 	AddCard(ctx context.Context, CardToken string, Number string) ([]*models.PaymentCard, error){
-	paymentCard, err := s.walletRepo.AddCard(ctx, CardToken, Number)
-	if err != nil {
-		return paymentCard, err
+func (s *paymentSvcImpl) 	AddCard(ctx context.Context, CardToken, EaterID string, Number string,IsVerified bool) ([]*models.PaymentCard, error){
+	paymentCardR :=  models.PaymentCard {
+		ID: rand.UUID(),
+		EaterID: EaterID,
+		Number: Number,
+		IsVerified: true,
+		CreatedAt: time.Now().UTC(),
+
 	}
-	return paymentCard, nil
+	 err := s.walletRepo.AddCard(ctx, &paymentCardR)
+	if err != nil {
+		return nil, err
+	}
+	return []*models.PaymentCard{&paymentCardR}, nil
 }
 
 func (s *paymentSvcImpl) DeleteCard(ctx context.Context, cardID string) error {
@@ -45,12 +55,12 @@ func (s *paymentSvcImpl) DeleteCard(ctx context.Context, cardID string) error {
 }
 
 func (s *paymentSvcImpl) GetCard(ctx context.Context, cardID string) (*models.PaymentCard, error) {
-	var paymentCard models.PaymentCard
-	err := s.walletRepo.GetCard(ctx, cardID)
+	var paymentCardR models.PaymentCard
+	err := s.walletRepo.GetCard(ctx, &paymentCardR)
 	if err != nil {
 		return nil, err
 	}
-	return &paymentCard, nil
+	return &paymentCardR, nil
 }
 
 func (s *paymentSvcImpl) ListCardsByEater(ctx context.Context, eaterID string) ([]*models.PaymentCard, error) {
