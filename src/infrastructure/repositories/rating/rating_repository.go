@@ -17,7 +17,7 @@ const (
 type rateRepoImpl struct {
 	db *gorm.DB
 }
-func NewEaterRepository(db *gorm.DB) repositories.RatingRepository {
+func NewRatingRepository(db *gorm.DB) repositories.RatingRepository {
 	return &rateRepoImpl{
 		db: db,
 	}

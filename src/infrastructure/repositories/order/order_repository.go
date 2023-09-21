@@ -24,6 +24,22 @@ func NewAddressRepository(db *gorm.DB) repositories.OrderRepository {
 	}
 }
 
+func (r *orderSvcImpl) WithTx(ctx context.Context,f func(r repositories.OrderRepository) error) error {
+	if err := r.db.Transaction(func(tx *gorm.DB) error {
+		r := orderSvcImpl{
+			db: tx,
+		}
+		if err := f(&r); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 
 func (r *orderSvcImpl) SaveOrder(ctx context.Context, order *models.Order) error {
 	err := r.db.WithContext(ctx).Create(order).Error
@@ -32,6 +48,11 @@ func (r *orderSvcImpl) SaveOrder(ctx context.Context, order *models.Order) error
 	}
 	return nil
 }
+
+func (r *orderSvcImpl) SaveOrderItems(ctx context.Context, orderItems []*models.OrderItem) error{
+	return r.db.WithContext(ctx).Table(tableOrder).Create(orderItems).Error
+}
+
 
 func (r *orderSvcImpl) GetOrder(ctx context.Context, orderID string) (*models.Order, error) {
 	var order *models.Order

@@ -5,7 +5,6 @@ import (
 
 	"github.com/DevShuxat/eater-service/src/domain/wallet/models"
 	"github.com/DevShuxat/eater-service/src/domain/wallet/repositories"
-	"github.com/DevShuxat/eater-service/src/infrastructure/utils"
 	"gorm.io/gorm"
 )
 
@@ -40,9 +39,9 @@ func (r *walletRepo) DeleteCard(ctx context.Context, cardID string) error {
 	return nil
 }
 
-func (r *walletRepo) GetCard(ctx context.Context, cardID string) ([]*models.PaymentCard,error){
+func (r *walletRepo) GetCard(ctx context.Context, paymentCardR string) (*models.PaymentCard,error){
 	var paymentCard *models.PaymentCard
-	result := r.db.WithContext(ctx).Table(tableWallet).First(&paymentCard, "id = ?", cardID)
+	result := r.db.WithContext(ctx).Table(tableWallet).First(&paymentCard, "id = ?", paymentCardR)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -62,16 +61,4 @@ func (r *walletRepo) ListCardsByEater(ctx context.Context, eaterID string) ([]*m
 	}
 	return paymentCard, nil
 }
-func (r *walletRepo) ListCard(ctx context.Context, cardID string, sort string, page, pageSize int) ([]*models.PaymentCard, error) {
-	var paymentCard []*models.PaymentCard
-	result := r.db.
-		WithContext(ctx).
-		Table(tableWallet).
-		Where("eater_id = ?", cardID).
-		Scopes(utils.Paginate(page, pageSize), utils.Sort(sort)).Find(&paymentCard)
 
-	if result.Error != nil {
-		return nil, result.Error
-	}
-	return paymentCard, nil
-}

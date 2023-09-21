@@ -8,7 +8,9 @@ import (
 )
 
 type OrderRepository interface {
+	WithTx(ctx context.Context, f func(r OrderRepository) error) error
 	SaveOrder(ctx context.Context, order *models.Order) error
+	SaveOrderItems(ctx context.Context, orderItem []*models.OrderItem) error
 	UpdateOrder(ctx context.Context, order *models.Order) error
 	UpdateOrderStatus(ctx context.Context, orderID, newStatus string, time time.Time) error
 	UpdateOrderPaymentStatus(ctx context.Context, orderID, newPaymentStatus string, time time.Time) error
