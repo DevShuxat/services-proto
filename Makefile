@@ -1,13 +1,41 @@
 PWD=$(shell pwd)
 SERVICE=eater-svc
 MIGRATION_PATH=${PWD}/src/infrastructure/migrations
-migration-file:
-docker run -v ${MIGRATION_PATH}:/migrations migrate/migrate create -ext sql -dir /migrations -seq $(NAME)
-clear:
-rm -rf ${PWD}/bin/${SERVICE}
-bin: clear
-CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -a -installsuffix cgo -o ${PWD}/bin/${SERVICE} ${PWD}/main.go
-chmod +x ${PWD}/bin/${SERVICE}
-bin-windows: clear
-CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -a -installsuffix cgo -o ${PWD}/bin/${SERVICE} ${PWD}/main.go
-chmod +x ${PWD}/bin/${SERVICE}
+PROTOS_PATH=$(PWD)/src/infrastructure/protos
+
+server:
+	go run main.go
+
+migration:
+	migrate create -ext sql -dir pkg/database/migrations -seq $(table)
+
+migrateup:
+	migrate -database "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable&search_path=public" -path ./pkg/database/migrations up
+
+migratedown:
+	migrate -database "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable&search_path=public" -path ./pkg/database/migrations down
+
+add-protos-submodule:
+	git submodule add git@github.com:DevShuxat/service-protos.git ./src/infrastructure/protos
+
+pull-protos-submodule:
+	git submodule update --recursive --remote
+
+
+gen-eater-proto:
+	protoc \
+	--go_out=./src/application/protos \
+	--go_opt=paths=import \
+	--go-grpc_out=./src/application/protos \
+	--go-grpc_opt=paths=import \
+	-I=$(PROTOS_PATH)/food-delivery \
+	$(PROTOS_PATH)/eater/*.proto
+
+docker: bin-lunix
+	docker build --rm -t eater-svc -f ${PWD}/deploy/Dockerfile .
+
+compose-up:
+	docker-compose -f ./deploy/docker-compose.yml up
+
+compose-down:
+	docker-compose -f ./deploy/docker-compose.yml down

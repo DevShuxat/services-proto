@@ -98,3 +98,4 @@ func (r *rateRepoImpl) ListRestaurantRating(ctx context.Context, restaurantID st
 	}
 	return ratings, nil
 }
+///and restaurant rating################################################################	

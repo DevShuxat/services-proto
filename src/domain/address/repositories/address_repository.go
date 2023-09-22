@@ -7,9 +7,9 @@ import (
 )
 
 type AddressRepository interface {
-	SaveAddress(ctx context.Context, address *models.Address) (error)
-	UpdateAddress(ctx context.Context, address *models.Address) (error)
-	DeleteAddress(ctx context.Context, addressID string) (error)
+	SaveAddress(ctx context.Context, address *models.Address) error
+	UpdateAddress(ctx context.Context, address *models.Address) error
+	DeleteAddress(ctx context.Context, addressID string) error
 	GetAddress(ctx context.Context, addressID string) (*models.Address, error)
 	ListAddressesByEater(ctx context.Context, eaterID string) ([]*models.Address, error)
 }

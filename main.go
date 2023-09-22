@@ -81,9 +81,9 @@ func main() {
 // ------------------------------------------------------------
 	// start Application
 	
-	eaterApp := appsvc.NewEaterAppService(eaterSvc,tokenSvc)
+	eaterApp := appsvc.NewEaterApplicationService(eaterSvc,tokenSvc)
 	addressApp := appsvc.NewAddressAppService(addressSvc)
-	deliveryRatingApp := appsvc.NewDeliveryRatingAppService(deliveryRatingSvc)
+	deliveryRatingApp := appsvc.NewRatingService(deliveryRatingSvc)
 	restaurantRatingApp := appsvc.NewRestaurantRatingAppService(restaurantRatingSvc)
 	// end Application
 // ------------------------------------------------------------
