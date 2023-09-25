@@ -15,20 +15,20 @@ migrateup:
 migratedown:
 	migrate -database "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable&search_path=public" -path ./pkg/database/migrations down
 
-add-protos-submodule:
-	git submodule add git@github.com:DevShuxat/service-protos.git ./src/infrastructure/protos
+# add-protos-submodules:
+# 	git submodule add git@github.com:DevShuxat/services-proto.git ./src/infrastructure/protos
 
-pull-protos-submodule:
-	git submodule update --recursive --remote
+# pull-protos-submodules:
+# 	git submodule update --recursive --remote
 
 
 gen-eater-proto:
-	protoc \
+	protos \
 	--go_out=./src/application/protos \
 	--go_opt=paths=import \
 	--go-grpc_out=./src/application/protos \
 	--go-grpc_opt=paths=import \
-	-I=$(PROTOS_PATH)/food-delivery \
+	-I=$(PROTOS_PATH)/eater \
 	$(PROTOS_PATH)/eater/*.proto
 
 docker: bin-lunix

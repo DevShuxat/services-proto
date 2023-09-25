@@ -8,14 +8,14 @@ import (
 type Server struct{
 	pb.EaterServiceServer
 	eaterApp services.EaterApplicationService
-	addressApp services.AddressAppService
+	addressApp services.AddressService
 	deliveryRatingApp services.DeliveryRatingAppService
 	restaurantRatingApp services.RestaurantRatingAppService
 }
 
 func NewServer(
 	eaterApp services.EaterApplicationService,
-	addressApp services.AddressAppService,
+	addressApp services.AddressApplicationService,
 	deliveryRatingApp services.DeliveryRatingAppService,
 	restaurantRatingApp services.RestaurantRatingAppService,
 ) *Server{
