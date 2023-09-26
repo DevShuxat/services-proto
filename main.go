@@ -13,16 +13,11 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	grpcserver "github.com/DevShuxat/eater-service/src/application/grpc"
-	pb "github.com/DevShuxat/eater-service/src/application/protos/eater"
 	appsvc "github.com/DevShuxat/eater-service/src/application/services"
-	addresssvc "github.com/DevShuxat/eater-service/src/domain/address/services"
 	eatersvc "github.com/DevShuxat/eater-service/src/domain/eater/services"
-	ratingsvc "github.com/DevShuxat/eater-service/src/domain/rating/services"
 	"github.com/DevShuxat/eater-service/src/infrastructure/config"
 	"github.com/DevShuxat/eater-service/src/infrastructure/jwt"
-	addressrepo "github.com/DevShuxat/eater-service/src/infrastructure/repositories/address"
 	eaterrepo "github.com/DevShuxat/eater-service/src/infrastructure/repositories/eater"
-	ratingrepo "github.com/DevShuxat/eater-service/src/infrastructure/repositories/rating"
 	"github.com/DevShuxat/eater-service/src/infrastructure/sms"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
@@ -58,37 +53,18 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-// ------------------------------------------------------------
-	// start infrastructure
+
 	
 	smsClient := sms.NewClient(config.SmsProvideApiKey)
 	tokenSvc := jwt.NewService(config.JWTSecret, config.JWTExpiresInSec)
 	eaterRepo := eaterrepo.NewEaterRepository(db)
-	addresRepo := addressrepo.NewAddressRepository(db)
-	deliverRatingRepo := ratingrepo.NewRatingRepository(db)
-	restaurantRatingRepo := ratingrepo.NewRatingRepository(db)
 	
-	// end infrastructure
-// ------------------------------------------------------------
-	// start domain
+	
 
 	eaterSvc := eatersvc.NewEaterService(eaterRepo,smsClient,logger)
-	addressSvc := addresssvc.NewAddressService(addresRepo)
-	deliveryRatingSvc := ratingsvc.NewDeliveryRatingService(deliverRatingRepo)
-	restaurantRatingSvc := ratingsvc.NewDeliveryRatingService(restaurantRatingRepo)
 
-	// end domain
-// ------------------------------------------------------------
-	// start Application
-	
 	eaterApp := appsvc.NewEaterApplicationService(eaterSvc,tokenSvc)
-	addressApp := appsvc.NewAddressAppService(addressSvc)
-	deliveryRatingApp := appsvc.NewRatingService(deliveryRatingSvc)
-	restaurantRatingApp := appsvc.NewRestaurantRatingAppService(restaurantRatingSvc)
-	// end Application
-// ------------------------------------------------------------
-
-//  start Controllers
+	
 	root := gin.Default()
 
 	root.Use(cors.New(cors.Config{
@@ -98,7 +74,6 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	// cancel context
 	ctx,cancel := context.WithCancel(context.Background())
 	g,ctx := errgroup.WithContext(ctx)
 
@@ -106,7 +81,6 @@ func main() {
 
 	signal.Notify(osSignals,os.Interrupt,syscall.SIGINT, syscall.SIGTERM)
 	defer signal.Stop(osSignals)
-// stargt http server
 
 	var httpServer *http.Server
 
@@ -124,15 +98,12 @@ func main() {
 	})
 
 
-	// grpc server
+
 	var grpcServer *grpc.Server
 
 	g.Go(func () error {
 		server := grpcserver.NewServer(
 			eaterApp,
-			addressApp,
-			deliveryRatingApp,
-			restaurantRatingApp,
 		)
 		grpcServer = grpc.NewServer()
 		pb.RegisterEaterServiceServer(grpcServer,server)

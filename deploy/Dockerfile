@@ -1,6 +1,6 @@
 FROM golang:1.21 AS builder
 
-COPY ./  /go/src/app/
+COPY ./server  /go/src/app/
 
 WORKDIR /go/src/app
 

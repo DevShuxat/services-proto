@@ -1,7 +1,7 @@
 PWD=$(shell pwd)
 SERVICE=eater-svc
-MIGRATION_PATH=${PWD}/src/infrastructure/migrations
-PROTOS_PATH=$(PWD)/src/infrastructure/protos
+MIGRATION_PATH=./src/infrastructure/migrations
+PROTOS_PATH=./src/infrastructure/protos
 
 server:
 	go run main.go
@@ -15,15 +15,15 @@ migrateup:
 migratedown:
 	migrate -database "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable&search_path=public" -path ./pkg/database/migrations down
 
-# add-protos-submodules:
-# 	git submodule add git@github.com:DevShuxat/services-proto.git ./src/infrastructure/protos
+add-protos-submodules:
+	git submodule add git@github.com:DevShuxat/services-proto.git ./src/infrastructure/protos
 
-# pull-protos-submodules:
-# 	git submodule update --recursive --remote
+pull-protos-submodules:
+	git submodule update --recursive --remote
 
 
 gen-eater-proto:
-	protos \
+	protoc \
 	--go_out=./src/application/protos \
 	--go_opt=paths=import \
 	--go-grpc_out=./src/application/protos \

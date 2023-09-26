@@ -58,8 +58,7 @@ func (s *Server) GetAddress(ctx context.Context, r *pb.GetAddressRequest)(*pb.Ge
 func (s *Server) DeleteAddress(ctx context.Context, r *pb.DeleteAddressRequest)(*pb.DeleteAddressResponse, error){
 	return s.addressApp.DeleteAddress(ctx,r)
 }
-// ----------------------------------------------------------
-// start Deliver Rating 
+
 func (s *Server) RateDelivery(ctx context.Context, r *pb.RateDeliveryRequest)(*pb.RateDeliveryResponse,error){
 	return s.deliveryRatingApp.SaveRating(ctx,r)
 }
@@ -76,12 +75,6 @@ func (s *Server) GetDeliveryRatingByOrder(ctx context.Context, r *pb.GetDelivery
 	return s.deliveryRatingApp.GetRatingByOrder(ctx,r)
 }
 
-// end Delivery Rating
-// -----------------------------------------------------------
-
-
-// start Restaurant rating
-// -----------------------------------------------------------
 func (s *Server) RateRestaurant(ctx context.Context, r *pb.RateRestaurantRequest)(*pb.RateRestaurantResponse,error){
 	return s.restaurantRatingApp.SaveRating(ctx,r)
 }
@@ -93,5 +86,3 @@ func (s *Server) UpdateRestaurantRating(ctx context.Context, r *pb.UpdateRestaur
 func (s *Server) ListRestaurantRatingByEater(ctx context.Context, r *pb.ListRestaurantRatingByEaterRequest)(*pb.ListRestaurantRatingByEaterResponse,error){
 	return s.restaurantRatingApp.GetRatingByEater(ctx,r)
 }
-// end Restaurant rating
-// -----------------------------------------------------------
