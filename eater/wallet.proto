@@ -32,5 +32,5 @@ message ListPaymentCardByEaterRequest {
   string eater_id = 1;
 }
 message ListPaymentCardByEaterResponse {
-  repeated PaymentCardView cards = 1 [json_name = "cards"];;
+  repeated PaymentCardView cards = 1 [json_name = "cards"];
 }
