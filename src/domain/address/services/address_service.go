@@ -7,15 +7,16 @@ import (
 
 	"github.com/DevShuxat/eater-service/src/domain/address/models"
 	"github.com/DevShuxat/eater-service/src/domain/address/repositories"
+	"github.com/DevShuxat/eater-service/src/infrastructure/rand"
 )
 
 
 type AddressService interface {
-	SaveAddress(ctx context.Context, addressID, EaterID, Name string, Latitude, Longitude float64)  (*models.Address, error)
-	UpdateAddress(ctx context.Context, address *models.Address) (error)
+	SaveAddress(ctx context.Context,  EaterID, Name string, Latitude, Longitude float64)  (*models.Address, error)
+	UpdateAddress(ctx context.Context, addressId string, name string, long, lat float64) (*models.Address, error)
 	DeleteAddress(ctx context.Context, addressID string) (error)
 	GetAddress(ctx context.Context, addressID string) (*models.Address, error)
-	ListAddressesByEater(ctx context.Context, eaterID string) ([]*models.Address, error)
+	ListAddressByEater(ctx context.Context, eaterID string, sort string, page, pageSize int) ([]*models.Address, error)
 }
 
 type addressSvcImpl struct {
@@ -37,14 +38,14 @@ func (s *addressSvcImpl) GetAddress(ctx context.Context, addressID string) (*mod
     return address, nil
 }
 
-func (s *addressSvcImpl) SaveAddress(ctx context.Context, addressID, EaterID, Name string, Latitude, Longitude float64) (*models.Address, error) {
+func (s *addressSvcImpl) SaveAddress(ctx context.Context, EaterID, Name string, Latitude, Longitude float64) (*models.Address, error) {
   location := &models.Location{
     Longitude: Longitude,
     Latitude:  Latitude,
   }
 
   address := &models.Address{
-    ID:        addressID,
+    ID:        rand.UUID(),
     EaterID:   EaterID,
     Name:      Name,
     Location:  location,
@@ -59,24 +60,26 @@ func (s *addressSvcImpl) SaveAddress(ctx context.Context, addressID, EaterID, Na
     return address, nil
 }
 
-func (s *addressSvcImpl) UpdateAddress(ctx context.Context, address *models.Address) (error) {
-    if address.ID == "" {
-        return errors.New("address ID is required for updating")
+func (s *addressSvcImpl) UpdateAddress(ctx context.Context, addressId string, name string, long, lat float64) (*models.Address, error) {
+   location := &models.Location{
+		Longitude: long,
+		Latitude:  lat,
+	}
 
-    }
-    existingAddress, err := s.addressRepo.GetAddress(ctx, address.ID)
-    if err != nil {
-        return nil
-    }
+	address := &models.Address{
+		ID:        addressId,
+		Name:      name,
+		Location:  location,
+		UpdatedAt: time.Now().UTC(),
+	}
 
-    existingAddress.Name = address.Name
-    existingAddress.Location = address.Location
-    existingAddress.UpdatedAt = time.Now().UTC()
+	err := s.addressRepo.UpdateAddress(ctx, address)
 
-        if err := s.addressRepo.UpdateAddress(ctx, existingAddress); err != nil {
-            return err
-        }
-    return nil
+	if err != nil {
+		return nil, err
+	}
+
+	return address, nil
 }
 
 func (s *addressSvcImpl) DeleteAddress(ctx context.Context, addressID string) error {
@@ -91,13 +94,14 @@ func (s *addressSvcImpl) DeleteAddress(ctx context.Context, addressID string) er
 }
 
 
-func (s *addressSvcImpl) ListAddressesByEater(ctx context.Context, eaterID string) ([]*models.Address, error) {
-    address, err := s.addressRepo.ListAddressesByEater(ctx, eaterID)
-    if err != nil {
-        return nil, err
-    }
-   
-    return address, nil
+func (s *addressSvcImpl) ListAddressByEater(ctx context.Context, eaterID string, sort string, page, pageSize int) ([]*models.Address, error) {
+
+	addresses, err := s.addressRepo.ListAddressByEater(ctx, eaterID, sort, page, pageSize)
+	if err != nil {
+		return nil, err
+	}
+
+	return addresses, nil
 }
 
 

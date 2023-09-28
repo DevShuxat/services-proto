@@ -42,9 +42,9 @@ func (r *rateRepoImpl) UpdateDelivery(ctx context.Context, rating *models.Delive
 	return  nil
 }
 
-func (r *rateRepoImpl) GetDeliveryRating(ctx context.Context, orderID string) ([]*models.DeliveryRating, error) {
+func (r *rateRepoImpl) GetDeliveryRating(ctx context.Context, EaterID string) ([]*models.DeliveryRating, error) {
  var rating []*models.DeliveryRating
- result := r.db.WithContext(ctx).Table(tableDelivery).First(&rating, "id = ?", orderID)
+ result := r.db.WithContext(ctx).Table(tableDelivery).First(&rating, "id = ?", EaterID)
 if result.Error != nil {
 		return nil, result.Error
 	}
@@ -90,9 +90,9 @@ func (r *rateRepoImpl) UpdateRestaurantRating(ctx context.Context, rating *model
 	return  nil
 }
 
-func (r *rateRepoImpl) ListRestaurantRating(ctx context.Context, restaurantID string) ([]*models.RestaurantRating, error) {
+func (r *rateRepoImpl) ListRestaurantRating(ctx context.Context, eaterID string) ([]*models.RestaurantRating, error) {
 	var ratings []*models.RestaurantRating
-	result := r.db.WithContext(ctx).Table(tableRestaurantRating).Where("id = ?", restaurantID).Find(ratings)
+	result := r.db.WithContext(ctx).Table(tableRestaurantRating).Where("id = ?", eaterID).Find(ratings)
 	if result.Error != nil {
 		return nil, result.Error
 	}

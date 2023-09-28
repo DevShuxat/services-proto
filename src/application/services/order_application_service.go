@@ -9,7 +9,7 @@ import (
 )
 
 type OrderRepository interface {
-	SaveOrder(ctx context.Context, eaterID string, cart *models.Cart, address *models.AddressInfo) (*dtos.SaveOrderRespons, error)
+	SaveOrder(ctx context.Context, req ) (*dtos.SaveOrderRespons, error)
 	UpdateOrder(ctx context.Context, order *models.Order) (*dtos.UpdateOrderResponse, error)
 	UpdateOrderStatus(ctx context.Context, orderID, newStatus string, time time.Time) (*dtos.UpdateOrderStatusResponse, error)
 	UpdateOrderPaymentStatus(ctx context.Context, orderID, newPaymentStatus string, time time.Time) (*dtos.UpdateOrderPaymentStatsu,error)

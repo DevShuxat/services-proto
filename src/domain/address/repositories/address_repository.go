@@ -11,5 +11,5 @@ type AddressRepository interface {
 	UpdateAddress(ctx context.Context, address *models.Address) error
 	DeleteAddress(ctx context.Context, addressID string) error
 	GetAddress(ctx context.Context, addressID string) (*models.Address, error)
-	ListAddressesByEater(ctx context.Context, eaterID string) ([]*models.Address, error)
+	ListAddressByEater(ctx context.Context, eaterID string, sort string, page, pageSize int) ([]*models.Address, error)
 }

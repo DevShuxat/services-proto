@@ -6,99 +6,103 @@ import (
 	"fmt"
 
 	dtos "github.com/DevShuxat/eater-service/src/application/dtos/eater"
-	EaterService "github.com/DevShuxat/eater-service/src/domain/eater/services"
+	pb "github.com/DevShuxat/eater-service/src/application/protos/eater"
+	eatersvc "github.com/DevShuxat/eater-service/src/domain/eater/services"
 	"github.com/DevShuxat/eater-service/src/infrastructure/jwt"
 	"github.com/DevShuxat/eater-service/src/infrastructure/validator"
 )
 
-type EaterApplicationService interface {
-	SignupEater(ctx context.Context, phoneNumber string) (*dtos.EaterSignupResponse, error)
-	ConfirmSMSCode(ctx context.Context, eaterID, smsCode string) (*dtos.ConfirmSMSCodeResponse, error)
-	UpdateEaterProfile(ctx context.Context, eaterID, name, imageUrl string) (*dtos.UpdateEaterProfileResponse, error)
-	GetEaterProfile(ctx context.Context, eaterID string) (*dtos.GetEaterProfileResponse, error)
+type EaterAppService interface {
+	SignupEater(ctx context.Context, req *pb.SignupEaterRequest) (*pb.SignupEaterResponse, error)
+	ConfirmSmsCode(ctx context.Context, req *pb.ConfirmSmsCodeRequest) (*pb.ConfirmSmsCodeResponse, error)
+	UpdateEaterProfile(ctx context.Context, req *pb.UpdateEaterProfileRequest) (*pb.UpdateEaterProfileResponse, error)
+	GetEaterProfile(ctx context.Context, req *pb.GetEaterProfileRequest) (*pb.GetEaterProfileResponse, error)
 }
 
 type eaterAppSvcImpl struct {
-	eaterSvc EaterService.EaterService
+	eaterSvc eatersvc.EaterService
 	tokenSvc jwt.Service
 }
 
-func NewEaterApplicationService(
-	eaterSvc EaterService.EaterService,
+func NewEaterAppService(
+	eaterSvc eatersvc.EaterService, 
 	tokenSvc jwt.Service,
-) EaterApplicationService {
+	) EaterAppService {
 	return &eaterAppSvcImpl{
 		eaterSvc: eaterSvc,
 		tokenSvc: tokenSvc,
 	}
 }
 
-func (s *eaterAppSvcImpl) SignupEater(ctx context.Context, phoneNumber string) (*dtos.EaterSignupResponse, error) {
-	if !validator.ValidateUzPhoneNumber(phoneNumber) {
-		return nil, errors.New("invalid phone number. ")
+func (s *eaterAppSvcImpl) SignupEater(ctx context.Context,req *pb.SignupEaterRequest) (*pb.SignupEaterResponse,error){
+	
+	if !validator.ValidateUzPhoneNumber(req.PhoneNumber) {
+		return nil,errors.New("Invalid phone number. MUst be of 998{code}{number} format")
 	}
-	eaterId, err := s.eaterSvc.SignupEater(ctx, phoneNumber)
+	eaterID, err := s.eaterSvc.SignupEater(ctx,req.PhoneNumber)
+	
 	if err != nil {
-		return nil, err
+		return nil,err
 	}
-
-	return dtos.NewEaterSignupResponse(eaterId), nil
+	return &pb.SignupEaterResponse{
+		EaterId: eaterID,
+	},nil
 }
 
-func (s *eaterAppSvcImpl) ConfirmSMSCode(ctx context.Context, eaterID, smsCode string) (*dtos.ConfirmSMSCodeResponse, error) {
 
-	if eaterID == "" {
-		return nil, fmt.Errorf("Invalid or missing eater_id: %s", eaterID)
+func (s *eaterAppSvcImpl) ConfirmSmsCode(ctx context.Context, req *pb.ConfirmSmsCodeRequest) (*pb.ConfirmSmsCodeResponse, error) {
+
+	if req.EaterId == "" {
+		return nil,errors.New("invait or missing eater id")
 	}
 
-	if smsCode == "" {
-		return nil, fmt.Errorf("Invalid or missing sms_code: %s", smsCode)
+	if req.SmsCode == "" {
+		return nil,errors.New("invait or missing sms code")
 	}
-	profile, err := s.eaterSvc.ConfirmSMSCode(ctx, eaterID, smsCode)
+
+	profile, err := s.eaterSvc.ConfirmSMSCode(ctx,req.EaterId,req.SmsCode)
+
 	if err != nil {
-		return nil, err
+		return nil,err
 	}
 
 	token, err := s.tokenSvc.CreateToken(ctx, profile.EaterID)
+
 	if err != nil {
-		return nil, err
+		return nil,err
 	}
 
-	response := dtos.ConfirmSMSCodeResponse{
+	return &pb.ConfirmSmsCodeResponse{
+		Profile: dtos.ToEaterProfilePB(profile),
 		Token:   token,
-		Profile: profile,
-	}
-	return &response, nil
+	},nil
+ 
 }
 
-func (s *eaterAppSvcImpl) UpdateEaterProfile(ctx context.Context, eaterID, name, imageUrl string) (*dtos.UpdateEaterProfileResponse, error) {
-
-	if eaterID == "" {
-		return nil, fmt.Errorf("Invalid or missing eater_id: %s", eaterID)
+func (s *eaterAppSvcImpl) UpdateEaterProfile(ctx context.Context,req *pb.UpdateEaterProfileRequest) (*pb.UpdateEaterProfileResponse, error) {
+	if req.Name == "" {
+		return nil, fmt.Errorf("Invalid or missing profile name: %s",&req.Name)
 	}
-
-	if name == "" {
-		return nil, fmt.Errorf("Invalid or missing name: %s", name)
-	}
-
-	profile, err := s.eaterSvc.UpdateEaterProfile(ctx, eaterID, name, imageUrl)
+	profile,err := s.eaterSvc.UpdateEaterProfile(ctx, req.EaterId, req.Name ,req.ImageUrl)
 	if err != nil {
 		return nil, err
 	}
 
-	return dtos.NewUpdateEaterProfileResponse(profile), nil
+	return &pb.UpdateEaterProfileResponse{
+		Profile: dtos.ToEaterProfilePB(profile),
+	},nil		
 }
 
-func (s *eaterAppSvcImpl) GetEaterProfile(ctx context.Context, eaterID string) (*dtos.GetEaterProfileResponse, error) {
-
-	if eaterID == "" {
-		return nil, fmt.Errorf("Invalid or missing eater_id: %s", eaterID)
+func (s *eaterAppSvcImpl) GetEaterProfile(ctx context.Context,req *pb.GetEaterProfileRequest) (*pb.GetEaterProfileResponse, error) {
+	if req.EaterId == "" {
+		return nil, fmt.Errorf("Invalid or missing eater id")
 	}
-
-	profile, err := s.eaterSvc.GetEaterProfile(ctx, eaterID)
+	profile,err := s.eaterSvc.GetEaterProfile(ctx, req.EaterId)
 	if err != nil {
 		return nil, err
 	}
 
-	return dtos.NewGetEaterProfileResponse(profile), nil
+	return &pb.GetEaterProfileResponse{
+		Profile: dtos.ToEaterProfilePB(profile),
+	},nil		
 }

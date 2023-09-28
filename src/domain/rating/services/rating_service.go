@@ -13,11 +13,11 @@ type RatingService interface {
 	RateDelivery(ctx context.Context, orderID, eaterID, comment string, rating int) (*models.DeliveryRating, error)
 	UpdateDelivery(ctx context.Context, ratingID, comment string, rating int) (*models.DeliveryRating, error)
 	ListDelivery(ctx context.Context, eaterID string) ([]*models.DeliveryRating, error)
-	GetDeliveryRating(ctx context.Context, orderID string) ([]*models.DeliveryRating, error)
+	GetDeliveryRating(ctx context.Context, EaterID string) ([]*models.DeliveryRating, error)
 
 	RateRestaurant(ctx context.Context, EaterID, RestaurantID, comment string, rating int) (*models.RestaurantRating, error)
 	UpdateRestaurantRating(ctx context.Context, ratingID, comment string, rating int) (*models.RestaurantRating, error)
-	ListRestaurantRating(ctx context.Context, restaurantID string) ([]*models.RestaurantRating, error)
+	ListRestaurantRating(ctx context.Context, eaterID string) ([]*models.RestaurantRating, error)
 }
 
 type ratingSvcImp struct {
@@ -66,8 +66,8 @@ func (s *ratingSvcImp) UpdateDelivery(ctx context.Context, ratingID, comment str
 	return &ratingD,nil
 }
 
-func (s *ratingSvcImp) GetDeliveryRating(ctx context.Context, orderID string) ([]*models.DeliveryRating, error) {
-	rating, err := s.ratingRepo.GetDeliveryRating(ctx, orderID)
+func (s *ratingSvcImp) GetDeliveryRating(ctx context.Context, EaterID string) ([]*models.DeliveryRating, error) {
+	rating, err := s.ratingRepo.GetDeliveryRating(ctx, EaterID)
 	if err != nil {
 		return nil, err
 	}
@@ -125,8 +125,8 @@ func (s *ratingSvcImp) UpdateRestaurantRating(ctx context.Context, ratingID, com
 	return &ratingR, err
 }
 
-func (s *ratingSvcImp) ListRestaurantRating(ctx context.Context, restaurantID string) ([]*models.RestaurantRating, error) {
-	ratings, err := s.ratingRepo.ListRestaurantRating(ctx, restaurantID)
+func (s *ratingSvcImp) ListRestaurantRating(ctx context.Context, eaterID string) ([]*models.RestaurantRating, error) {
+	ratings, err := s.ratingRepo.ListRestaurantRating(ctx, eaterID)
 	if err != nil {
 		return nil, err
 	}

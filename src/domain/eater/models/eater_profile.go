@@ -9,6 +9,7 @@ type EaterProfile struct {
 	Name        string
 	PhoneNumber string
 	ImageUrl    string
+	IsPhoneNumberConfirmed bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
