@@ -103,7 +103,7 @@ func (s *ratingsSvc) GetDeliveryRating(ctx context.Context, req *pb.GetDeliveryR
 		return nil, err
 	}
 	return &pb.GetDeliveryRatingByOrderResponse{
-		Rating: dtos.ToDeliveryRatingPB(rating),
+		Rating: dtos.ToDeliveryRatingsPB(rating)[0],
 	}, nil
 }
 

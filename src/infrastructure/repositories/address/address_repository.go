@@ -58,7 +58,7 @@ func (r *addressSvcImp) GetAddress(ctx context.Context, addressID string) (*mode
 	return &address, nil
 }
 
-func (r *addressSvcImp) ListAddressByEater(ctx context.Context, eaterID string, sort string, page, pageSize int) ([]*models.Address, error) {
+func (r *addressSvcImp) ListAddressByEater(ctx context.Context, eaterID string) ([]*models.Address, error) {
 	var address []*models.Address
 	result := r.db.WithContext(ctx).Table(tableAddress).Where(&address, "eater_id = ?", eaterID).Find(&address)
 

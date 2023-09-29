@@ -10,7 +10,7 @@ import (
 )
 
 type WalletService interface {
-	AddCard(ctx context.Context, CardToken, EaterID, cardToken, Number string) error
+	AddCard(ctx context.Context, CardToken, EaterID, CardNumber string) (*models.PaymentCard, error)
 	GetCard(ctx context.Context, cardID string) (*models.PaymentCard, error)
 	DeleteCard(ctx context.Context, cardID string) error
 	ListCardsByEater(ctx context.Context, eaterID string) ([]*models.PaymentCard, error)
@@ -28,17 +28,20 @@ func NewWalletService(
 	}
 }
 
-func (s *paymentSvcImpl) 	AddCard(ctx context.Context, CardToken, EaterID, cardToken, Number string) error {
-	paymentCardR :=  &models.PaymentCard {
-		ID: rand.UUID(),
-		EaterID: EaterID,
-		Number: Number,
-		CardToken: cardToken,
+func (s *paymentSvcImpl) AddCard(ctx context.Context, CardToken, EaterID, CardNumber string) (*models.PaymentCard, error) {
+	paymentCardR := &models.PaymentCard{
+		ID:         rand.UUID(),
+		EaterID:    EaterID,
+		Number:     CardNumber,
+		CardToken:  CardToken,
 		IsVerified: true,
-		CreatedAt: time.Now().UTC(),
-
+		CreatedAt:  time.Now().UTC(),
 	}
-return s.walletRepo.AddCard(ctx,paymentCardR)
+	err := s.walletRepo.AddCard(ctx, paymentCardR)
+	if err != nil {
+		return nil, err
+	}
+	return paymentCardR, nil
 }
 
 func (s *paymentSvcImpl) DeleteCard(ctx context.Context, cardID string) error {
@@ -60,4 +63,3 @@ func (s *paymentSvcImpl) ListCardsByEater(ctx context.Context, eaterID string) (
 	}
 	return paymentCards, nil
 }
-
