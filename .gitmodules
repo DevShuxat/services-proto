@@ -1,3 +1,0 @@
-[submodule "src/infrastructure/protos"]
-	path = src/infrastructure/protos
-	url = git@github.com:DevShuxat/services-proto.git
