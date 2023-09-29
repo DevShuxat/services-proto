@@ -6,7 +6,7 @@ import (
 
 	dtos "github.com/DevShuxat/eater-service/src/application/dtos/rating"
 	pb "github.com/DevShuxat/eater-service/src/application/protos/eater"
-	RatingService "github.com/DevShuxat/eater-service/src/domain/wallet/services"
+	ratingsvc "github.com/DevShuxat/eater-service/src/domain/rating/services"
 )
 
 type RatingApplicationService interface {
@@ -21,11 +21,11 @@ type RatingApplicationService interface {
 }
 
 type ratingsSvc struct {
-	ratingSvc RatingService.RatingService
+	ratingSvc ratingsvc.RatingService
 }
 
 func NewRatingApplicationService(
-	ratingSvc RatingService.RatingService,
+	ratingSvc ratingsvc.RatingService,
 ) RatingApplicationService {
 	return &ratingsSvc{
 		ratingSvc: ratingSvc,
@@ -33,33 +33,6 @@ func NewRatingApplicationService(
 }
 
 // DeliveryRating start #####################################
-// func (s *ratingsSvc) RateDelivery(ctx context.Context, req *pb.RateDeliveryRequest) (*pb.RateDeliveryResponse, error) {
-//     if req.GetRating() == 0 {
-//         return nil, errors.New("invalid rating request")
-//     }
-//     if req.GetComment() == "" {
-//         return nil, errors.New("comment required")
-//     }
-//     if req.GetOrderId() == "" {
-//         return nil, errors.New("order ID required")
-//     }
-//     if req.GetEaterId() == "" {
-//         return nil, errors.New("eater ID required")
-//     }
-
-//     rating, err := s.ratingSvc.RateDelivery(ctx, req.GetOrderId(), req.GetEaterId(), req.GetComment(), int(req.GetRating()))
-//     if err != nil {
-//         return nil, err
-//     }
-
-//     // Use ToDeliveryRatingsPB to convert the rating to a slice of DeliveryRating
-//     ratingPB := dtos.ToDeliveryRatingsPB(rating)
-
-//     return &pb.RateDeliveryResponse{
-//         Rating: ratingPB,
-//     }, nil
-// }
-
 func (s *ratingsSvc) RateDelivery(ctx context.Context, req *pb.RateDeliveryRequest) (*pb.RateDeliveryResponse, error) {
 	if req.GetRating() == 0 {
 		return nil, errors.New("invalid rating request")
