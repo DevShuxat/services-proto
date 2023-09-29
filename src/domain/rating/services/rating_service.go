@@ -13,7 +13,7 @@ type RatingService interface {
 	RateDelivery(ctx context.Context, orderID, eaterID, comment string, rating int) (*models.DeliveryRating, error)
 	UpdateDelivery(ctx context.Context, ratingID, comment string, rating int) (*models.DeliveryRating, error)
 	ListDelivery(ctx context.Context, eaterID string) ([]*models.DeliveryRating, error)
-	GetDeliveryRating(ctx context.Context, EaterID string) ([]*models.DeliveryRating, error)
+	GetDeliveryRating(ctx context.Context, OrderID string) ([]*models.DeliveryRating, error)
 
 	RateRestaurant(ctx context.Context, EaterID, RestaurantID, comment string, rating int) (*models.RestaurantRating, error)
 	UpdateRestaurantRating(ctx context.Context, ratingID, comment string, rating int) (*models.RestaurantRating, error)
@@ -66,8 +66,8 @@ func (s *ratingSvcImp) UpdateDelivery(ctx context.Context, ratingID, comment str
 	return &ratingD,nil
 }
 
-func (s *ratingSvcImp) GetDeliveryRating(ctx context.Context, EaterID string) ([]*models.DeliveryRating, error) {
-	rating, err := s.ratingRepo.GetDeliveryRating(ctx, EaterID)
+func (s *ratingSvcImp) GetDeliveryRating(ctx context.Context, orderID string) ([]*models.DeliveryRating, error) {
+	rating, err := s.ratingRepo.GetDeliveryRating(ctx, orderID)
 	if err != nil {
 		return nil, err
 	}

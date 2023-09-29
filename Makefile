@@ -15,11 +15,11 @@ migrateup:
 migratedown:
 	migrate -database "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable&search_path=public" -path ./pkg/database/migrations down
 
-# add-protos-submodules:
-# 	git submodule add git@github.com:DevShuxat/services-proto.git ./src/infrastructure/protos
+add-protos-submodules:
+	git submodule add git@github.com:DevShuxat/services-proto.git ./src/infrastructure/protos
 
-# pull-protos-submodules:
-# 	git submodule update --recursive --remote
+pull-protos-submodules:
+	git submodule update --recursive --remote
 
 
 gen-eater-proto:

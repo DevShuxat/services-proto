@@ -107,7 +107,7 @@ func (s *ratingsSvc) GetDeliveryRating(ctx context.Context, req *pb.GetDeliveryR
 	}, nil
 }
 
-//end DeliveryRatin #########################################
+//end DeliveryRating #########################################
 
 func (s *ratingsSvc) RateRestaurant(ctx context.Context, req *pb.RateRestaurantRequest) (*pb.RateRestaurantResponse, error) {
 	if req.Rating < 1 || req.Rating > 5 {
