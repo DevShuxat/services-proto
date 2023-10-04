@@ -1,0 +1,21 @@
+syntax = "proto3";
+option go_package = "./restaurant_payment";
+message MerchantSetting {
+string entity_id = 1 [json_name = "entity_id"];
+string cashbox_id = 2 [json_name = "cashbox_id"];
+bool enabled = 3 [json_name = "enabled"];
+string created_at = 8 [json_name = "created_at"];
+string updated_at = 9 [json_name = "updated_at"];
+}
+message UpdateMerchantSettingRequest {
+string entity_id = 1 [json_name = "entity_id"];
+string cashbox_id = 2 [json_name = "cashbox_id"];
+bool enabled = 3 [json_name = "enabled"];
+}
+message UpdateMerchantSettingResponse {}
+message GetMerchantSettingRequest {
+string entity_id = 1 [json_name = "entity_id"];
+}
+message GetMerchantSettingResponse {
+MerchantSetting setting = 1 [json_name = "setting"];
+}

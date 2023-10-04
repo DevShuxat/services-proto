@@ -1,0 +1,45 @@
+
+syntax = "proto3";
+option go_package = "./restaurant_payment";
+message Receipt {
+string id = 1 [json_name = "id"];
+string order_id = 2 [json_name = "order_id"];
+string card_id = 3 [json_name = "card_id"];
+int32 amount = 4 [json_name = "amount"];
+map<string,string> data = 5 [json_name = "data"];
+string created_at = 6 [json_name = "created_at"];
+string updated_at = 7 [json_name = "updated_at"];
+}
+message Transaction {
+string id = 1 [json_name = "id"];
+string currency = 2 [json_name = "currency"];
+string status = 3 [json_name = "status"];
+int32 create_time = 4 [json_name = "create_time"];
+int32 pay_time =5 [json_name = "pay_time"];
+int32 cancel_time = 6 [json_name = "cancel_time"];
+int64 amount = 7 [json_name = "amount"];
+map<string,string> account = 8[json_name = "account"];
+string created_at = 9 [json_name = "created_at"];
+string updated_at = 10 [json_name = "updated_at"];
+}
+message GetReceiptRequest {
+string receipt_id = 1 [json_name = "receipt_id"];
+string order_id = 2 [json_name = "order_id"];
+}
+message GetReceiptResponse {
+Receipt receipt = 1 [json_name = "receipt"];
+}
+message SaveTransactionRequest {
+Transaction transaction = 1;
+}
+message SaveTransactionResponse {}
+message UpdateTransactionRequest {
+Transaction transaction = 1;
+}
+message UpdateTransactionResponse {}
+message GetTransactionRequest {
+string transaction_id = 1 [json_name = "transaction_id"];
+}
+message GetTransactionResponse {
+Transaction transaction = 1;
+}
