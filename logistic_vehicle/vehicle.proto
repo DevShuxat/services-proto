@@ -1,7 +1,8 @@
 syntax = "proto3";
-option go_package = "github.com/DevShuxat/services-proto/logistics_vehicle";
+option go_package = "github.com/DevShuxat/services-proto/logistic_vehicle";
 
 package logistic_vehicle;
+
 message Vehicle {
 string id = 1 [json_name = "id"];
 string driver_id = 2 [json_name = "driver_id"];
