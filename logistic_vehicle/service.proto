@@ -1,7 +1,9 @@
 syntax = "proto3";
+
 option go_package = "github.com/DevShuxat/services-proto/logistic_vehicle";
 
 import "vehicle.proto";
+
 
 service VehicleService {
 rpc CreateVehicle(CreateVehicleRequest) returns (CreateVehicleResponse);
