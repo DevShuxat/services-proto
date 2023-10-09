@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/DevShuxat/services-proto/logistic_vehicle";
+option go_package = "./logistic_vehicle";
 
 import "vehicle.proto";
 
