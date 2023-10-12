@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-option go_package = "./eater";
-
+option go_package = "github.com/DevShuxat/services-proto/eater";
+package eater;
 message RestaurantRating {
   string id = 1 [json_name = "id"];
   string eater_id = 2 [json_name = "eater_id"];

@@ -1,6 +1,7 @@
 
 syntax = "proto3";
-option go_package = "./restaurant_payment";
+option go_package = "github.com/DevShuxat/services-proto/restaurant_payment";
+package restaurant_payment;
 message Receipt {
 string id = 1 [json_name = "id"];
 string order_id = 2 [json_name = "order_id"];

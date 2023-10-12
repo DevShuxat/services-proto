@@ -1,10 +1,11 @@
 syntax = "proto3";
-option go_package = "./eater";
-import "eater.proto";
-import "address.proto";
-import "wallet.proto";
-import "order.proto";
-import "rating.proto";
+option go_package = "github.com/DevShuxat/services-proto/eater";
+package eater;
+import "eater/eater.proto";
+import "eater/address.proto";
+import "eater/wallet.proto";
+import "eater/order.proto";
+import "eater/rating.proto";
 service EaterService {
   rpc SignupEater (SignupEaterRequest) returns (SignupEaterResponse);
   rpc ConfirmSmsCode(ConfirmSmsCodeRequest) returns (ConfirmSmsCodeResponse);

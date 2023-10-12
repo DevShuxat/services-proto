@@ -1,7 +1,8 @@
 syntax = "proto3";
-option go_package = "./restaurant_payment";
-import "merchant.proto";
-import "payment.proto";
+option go_package = "github.com/DevShuxat/services-proto/restaurant_payment";
+package restaurant_payment;
+import "restaurant_payment/merchant.proto";
+import "restaurant_payment/payment.proto";
 service RestaurantPayment {
 rpc UpdateMerchantSetting(UpdateMerchantSettingRequest) returns (UpdateMerchantSettingResponse);
 rpc GetMerchantSetting(GetMerchantSettingRequest) returns (GetMerchantSettingResponse);

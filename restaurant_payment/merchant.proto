@@ -1,5 +1,6 @@
 syntax = "proto3";
-option go_package = "./restaurant_payment";
+option go_package = "github.com/DevShuxat/services-proto/restaurant_payment";
+package restaurant_payment;
 message MerchantSetting {
 string entity_id = 1 [json_name = "entity_id"];
 string cashbox_id = 2 [json_name = "cashbox_id"];
