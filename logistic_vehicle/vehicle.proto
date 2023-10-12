@@ -1,8 +1,5 @@
 syntax = "proto3";
-option go_package = "./logistic_vehicle";
-
-package logistic_vehicle;
-
+option go_package = "./logistics_vehicle";
 message Vehicle {
 string id = 1 [json_name = "id"];
 string driver_id = 2 [json_name = "driver_id"];
@@ -33,7 +30,8 @@ message GetVehicleRequest {
 string vehicle_id = 1 [json_name = "vehicle_id"];
 }
 message GetVehicleResponse {
-Vehicle vehicle = 1 [json_name = "vehicle"];
+Vehicle vehicle = 1
+[json_name = "vehicle"];
 }
 message ListVehicleRequest {
 string driver_id = 1 [json_name = "driver_id"];
