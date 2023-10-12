@@ -1,43 +1,42 @@
 syntax = "proto3";
+
 option go_package = "github.com/DevShuxat/services-proto/logistics_vehicle";
 package logistics_vehicle;
-
 message Vehicle {
-string id = 1 [json_name = "id"];
-string driver_id = 2 [json_name = "driver_id"];
-string model = 3 [json_name = "model"];
-string make = 4 [json_name = "make"];
-string plate_number = 5 [json_name = "plate_number"];
-string image_url = 6 [json_name = "image_url"];
-string created_at = 7 [json_name = "created_at"];
-string updated_at = 8 [json_name = "updated_at"];
+  string id = 1 [json_name = "id"];
+  string driver_id = 2 [json_name = "driver_id"];
+  string model = 3 [json_name = "model"];
+  string make = 4 [json_name = "make"];
+  string plate_number = 5 [json_name = "plate_number"];
+  string image_url = 6 [json_name = "image_url"];
+  string created_at = 7 [json_name = "created_at"];
+  string updated_at = 8 [json_name = "updated_at"];
 }
 message CreateVehicleRequest {
-string driver_id = 1 [json_name = "driver_id"];
-string model = 2 [json_name = "model"];
-string make = 3 [json_name = "make"];
+  string driver_id = 1 [json_name = "driver_id"];
+  string model = 2 [json_name = "model"];
+  string make = 3 [json_name = "make"];
 }
 message CreateVehicleResponse {
-Vehicle vehicle = 1 [json_name = "vehicle"];
+  Vehicle vehicle = 1 [json_name = "vehicle"];
 }
 message UpdateVehicleRequest {
-Vehicle vehicle = 1 [json_name = "vehicle"];
+  Vehicle vehicle = 1 [json_name = "vehicle"];
 }
 message UpdateVehicleResponse {}
 message DeleteVehicleRequest {
-string vehicle_id = 1 [json_name = "vehicle_id"];
+  string vehicle_id = 1 [json_name = "vehicle_id"];
 }
 message DeleteVehicleResponse {}
 message GetVehicleRequest {
-string vehicle_id = 1 [json_name = "vehicle_id"];
+  string vehicle_id = 1 [json_name = "vehicle_id"];
 }
 message GetVehicleResponse {
-Vehicle vehicle = 1
-[json_name = "vehicle"];
+  Vehicle vehicle = 1 [json_name = "vehicle"];
 }
 message ListVehicleRequest {
-string driver_id = 1 [json_name = "driver_id"];
+  string driver_id = 1 [json_name = "driver_id"];
 }
 message ListVehicleResponse {
-repeated Vehicle vehicles = 1 [json_name = "vehicles"];
+  repeated Vehicle vehicles = 1 [json_name = "vehicles"];
 }
