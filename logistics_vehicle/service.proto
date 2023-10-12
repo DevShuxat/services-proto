@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-option go_package = "github.com/DevShuxat/services-proto/logistic_vehicle";
-package logistic_vehicle;
-import "logistic_vehicle/vehicle.proto";
+option go_package = "github.com/DevShuxat/services-proto/logistics_vehicle";
+package logistics_vehicle;
+import "logistics_vehicle/vehicle.proto";
 
 
 service VehicleService {
