@@ -5,6 +5,12 @@ package logistics_vehicle;
 import "logistics_vehicle/vehicle.proto";
 
 
+
+
+
+
+
+
 service VehicleService {
   rpc UpdateVehicle(UpdateVehicleRequest) returns (UpdateVehicleResponse);
   rpc DeleteVehicle(DeleteVehicleRequest) returns (DeleteVehicleResponse);
