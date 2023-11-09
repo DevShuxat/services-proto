@@ -1,0 +1,40 @@
+syntax = "proto3";
+option go_package = "github.com/DevShuxat/services-proto/restaurant_restaurant";
+import "restaurant_restaurant/restaurant_entity.proto";
+import "restaurant_restaurant/restaurant.proto";
+import "restaurant_restaurant/menu.proto";
+import "restaurant_restaurant/order.proto";
+
+
+service RestaurantService {
+rpc CreateRestaurantEntity (CreateRestaurantEntityRequest) returns (CreateRestaurantEntityResponse);
+rpc UpdateRestaurantEntity(UpdateRestaurantEntityRequest) returns (UpdateRestaurantEntityResponse);
+rpc ListRestaurantEntity(ListRestaurantEntityRequest) returns (ListRestaurantEntityResponse);
+rpc DeleteRestaurantEntity(DeleteRestaurantEntityRequest) returns (DeleteRestaurantEntityResponse);
+rpc AddRestaurant (AddRestaurantRequest) returns (AddRestaurantResponse);
+rpc UpdateRestaurant (UpdateRestaurantRequest) returns (UpdateRestaurantResponse);
+rpc ListRestaurantByEntity (ListRestaurantByEntityRequest) returns (ListRestaurantByEntityResponse);
+rpc RemoveRestaurant (RemoveRestaurantRequest) returns (RemoveRestaurantResponse);
+rpc SearchRestaurantEntitiesByLocation(SearchRestaurantEntitiesByLocationRequest) returns (SearchRestaurantEntitiesByLocationResponse);
+rpc SearchClosestRestaurants(SearchClosestRestaurantsRequest) returns (SearchClosestRestaurantsResponse);
+// menu
+rpc CreateMenu(CreateMenuRequest) returns (CreateMenuResponse);
+rpc UpdateMenu(UpdateMenuRequest) returns (UpdateMenuResponse);
+rpc DeleteMenu(DeleteMenuRequest) returns (DeleteMenuResponse);
+rpc GetMenu(GetMenuRequest) returns (GetMenuResponse);
+rpc AddCategory(AddCategoryRequest) returns (AddCategoryResponse);
+rpc UpdateCategory(UpdateCategoryRequest) returns (UpdateCategoryResponse);
+rpc DeleteCategory(DeleteCategoryRequest) returns (DeleteCategoryResponse);
+rpc ListCategory(ListCategoryRequest) returns (ListCategoryResponse);
+rpc AddItem(AddItemRequest) returns (AddItemResponse);
+rpc UpdateItem(UpdateItemRequest) returns (UpdateItemResponse);
+rpc DeleteItem(DeleteItemRequest) returns (DeleteItemResponse);
+rpc ListItem(ListItemRequest) returns (ListItemResponse);
+// order
+rpc UpdateOrder(UpdateOrderRequest) returns (UpdateOrderResponse);
+rpc DeleteOrder(DeleteOrderRequest) returns (DeleteOrderResponse);
+rpc GetOrder(GetOrderRequest) returns (GetOrderResponse);
+rpc ConfirmOrder(ConfirmOrderRequest) returns (ConfirmOrderResponse);
+rpc DeclineOrder(DeclineOrderRequest) returns (DeclineOrderResponse);
+rpc ListOrder(ListOrderRequest) returns (ListOrderResponse);
+}

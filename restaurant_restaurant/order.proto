@@ -1,0 +1,70 @@
+syntax = "proto3";
+option go_package = "github.com/DevShuxat/services-proto/restaurant_restaurant";
+package restaurant_restaurant;
+
+message OrderItem {
+string id = 1 [json_name = "id"];
+string name = 2 [json_name = "name"];
+int32 quantity = 3 [json_name = "quantity"];
+int32 price = 4 [json_name = "price"];
+int32 total_price = 5 [json_name = "total_price"];
+}
+message Order {
+message EaterInfo {
+string id= 1 [json_name = "id"];
+string name = 2 [json_name = "name"];
+}
+message DeliveryInfo {
+string name = 1 [json_name = "name"];
+double longitude = 2 [json_name = "longitude"];
+double latitude = 3 [json_name = "latitude"];
+}
+message PaymentInfo {
+string method = 1 [json_name = "method"];
+int32 delivery_price = 2 [json_name = "delivery_price"];
+int32 total_price = 3 [json_name = "total_price"];
+string card_id = 4 [json_name = "card_id"];
+}
+string id = 1 [json_name = "id"];
+string restaurant_id = 2 [json_name = "restaurant_id"];
+string status = 3 [json_name = "status"];
+EaterInfo eater = 4 [json_name = "eater"];
+DeliveryInfo delivery = 5 [json_name = "delivery"];
+PaymentInfo payment = 6 [json_name = "payment"];
+repeated OrderItem items =7 [json_name = "items"];
+string created_at = 8 [json_name = "created_at"];
+string updated_at = 9 [json_name = "updated_at"];
+}
+message UpdateOrderRequest {
+Order order = 1 [json_name = "order"];
+}
+message UpdateOrderResponse {
+Order order = 1 [json_name = "order"];
+}
+message DeleteOrderRequest {
+string order_id = 1 [json_name = "order_id"];
+}
+message DeleteOrderResponse {}
+message GetOrderRequest {
+string order_id = 1 [json_name = "order_id"];
+}
+message GetOrderResponse {
+Order order = 1 [json_name = "order"];
+}
+message ConfirmOrderRequest {
+string order_id = 1 [json_name = "order_id"];
+}
+message ConfirmOrderResponse {}
+message DeclineOrderRequest {
+string order_id = 1 [json_name = "order_id"];
+}
+message DeclineOrderResponse {}
+message ListOrderRequest {
+string restaurant_id = 1 [json_name = "restaurant_id"];
+string sort = 2 [json_name = "sort"];
+int32 page = 3 [json_name = "page"];
+int32 page_size = 4 [json_name = "page_size"];
+}
+message ListOrderResponse {
+repeated Order orders = 1;
+}

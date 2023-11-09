@@ -1,0 +1,43 @@
+syntax = "proto3";
+option go_package = "github.com/DevShuxat/services-proto/restaurant_restaurant";
+package restaurant_restaurant;
+
+message Address {
+string name = 1 [json_name = "name"];
+string description = 2 [json_name = "description"];
+double longitude = 3 [json_name = "longitude"];
+double latitude = 4 [json_name = "latitude"];
+}
+message Restaurant {
+string id = 1 [json_name = "id"];
+string entity_id = 2 [json_name = "entity_id"];
+string name = 3 [json_name = "name"];
+string description = 4 [json_name = "description"];
+Address address = 5 [json_name = "address"];
+string type = 6 [json_name = "type"];
+string created_at = 7 [json_name = "created_at"];
+string updated_at = 8 [json_name = "updated_at"];
+}
+message AddRestaurantRequest {
+string entity_id = 1 [json_name = "entity_id"];
+string name = 2 [json_name = "name"];
+}
+message AddRestaurantResponse {
+Restaurant restaurant = 1 [json_name = "restaurant"];
+}
+message UpdateRestaurantRequest {
+Restaurant restaurant = 1 [json_name = "restaurant"];
+}
+message UpdateRestaurantResponse {
+Restaurant restaurant = 1 [json_name = "restaurant"];
+}
+message ListRestaurantByEntityRequest {
+string entity_id = 1 [json_name = "entity_id"];
+}
+message ListRestaurantByEntityResponse {
+repeated Restaurant restaurants = 1 [json_name = "restaurants"];
+}
+message RemoveRestaurantRequest {
+string restaurant_id = 1 [json_name = "restaurant_id"];
+}
+message RemoveRestaurantResponse {}

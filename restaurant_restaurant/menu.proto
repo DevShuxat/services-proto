@@ -1,0 +1,96 @@
+syntax = "proto3";
+option go_package = "github.com/DevShuxat/services-proto/restaurant_restaurant";
+package restaurant_restaurant;
+
+message Menu {
+string id = 1 [json_name = "id"];
+string entity_id = 2 [json_name = "entity_id"];
+string name = 3 [json_name = "name"];
+string created_at = 4 [json_name = "created_at"];
+string updated_at = 5 [json_name = "updated_at"];
+}
+message Category {
+string id = 1 [json_name = "id"];
+string menu_id = 2 [json_name = "menu_id"];
+string name = 3 [json_name = "name"];
+string description = 4 [json_name = "description"];
+string created_at = 5 [json_name = "created_at"];
+string updated_at = 6 [json_name = "updated_at"];
+}
+message Item {
+string id = 1 [json_name = "id"];
+string category_id = 2 [json_name = "category_id"];
+string name = 3 [json_name = "name"];
+string description = 4 [json_name = "description"];
+string image_url = 5 [json_name = "image_url"];
+int32 price = 6 [json_name = "price"];
+string created_at = 7 [json_name = "created_at"];
+string updated_at = 8 [json_name = "updated_at"];
+}
+message CreateMenuRequest {
+string entity_id = 1 [json_name = "entity_id"];
+string name = 2 [json_name = "name"];
+}
+message CreateMenuResponse {
+Menu menu = 1;
+}
+message UpdateMenuRequest {
+string menu_id = 1 [json_name = "menu_id"];
+string name = 2 [json_name = "name"];
+}
+message UpdateMenuResponse {}
+message DeleteMenuRequest {
+string menu_id = 1 [json_name = "menu_id"];
+}
+message DeleteMenuResponse {}
+message GetMenuRequest {
+string entity_id = 1[json_name = "entity_id"];
+string menu_id = 2[json_name = "menu_id"];
+}
+message GetMenuResponse {
+Menu menu = 1 [json_name = "menu"];
+}
+message AddCategoryRequest {
+string menu_id = 1 [json_name = "menu_id"];
+string name = 2 [json_name = "name"];
+}
+message AddCategoryResponse {
+Category category = 1;
+}
+message UpdateCategoryRequest {
+string category_id = 1 [json_name = "category_id"];
+string name = 2 [json_name = "name"];
+}
+message UpdateCategoryResponse {}
+message DeleteCategoryRequest {
+string category_id = 1 [json_name = "category_id"];
+}
+message DeleteCategoryResponse {}
+message ListCategoryRequest {
+string menu_id = 1 [json_name = "menu_id"];
+}
+message ListCategoryResponse {
+repeated Category categories = 1 [json_name = "categories"];
+}
+message AddItemRequest {
+string category_id = 1 [json_name = "category_id"];
+string name = 2 [json_name = "name"];
+}
+message AddItemResponse {
+Item item = 1 [json_name = "item"];
+}
+message UpdateItemRequest {
+Item item = 1 [json_name = "item"];
+}
+message UpdateItemResponse {}
+message DeleteItemRequest {
+string item_id = 1 [json_name = "item_id"];
+}
+message DeleteItemResponse {}
+message ListItemRequest {
+string category_id = 1 [json_name = "category_id"];
+repeated string item_ids = 2 [json_name = "item_ids"];
+}
+message ListItemResponse {
+repeated Item items = 1 [json_name = "items"];
+}

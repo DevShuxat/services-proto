@@ -1,0 +1,52 @@
+syntax = "proto3";
+option go_package = "github.com/DevShuxat/services-proto/restaurant_restaurant";
+package restaurant_restaurant;
+
+message RestaurantEntity {
+string id = 1 [json_name = "id"];
+string name = 3 [json_name = "name"];
+string logo_url = 4 [json_name = "logo_url"];
+string image_url = 5 [json_name = "image_url"];
+string created_at = 6 [json_name = "created_at"];
+string updated_at = 7 [json_name = "updated_at"];
+}
+message CreateRestaurantEntityRequest {
+string name = 1 [json_name = "id"];
+}
+message CreateRestaurantEntityResponse {
+RestaurantEntity entity = 1 [json_name = "entity"];
+}
+message UpdateRestaurantEntityRequest {
+RestaurantEntity entity = 1 [json_name = "entity"];
+}
+message UpdateRestaurantEntityResponse {
+RestaurantEntity entity = 1 [json_name = "entity"];
+}
+message ListRestaurantEntityRequest {
+string sort = 1 [json_name = "sort"];
+int32 page = 2 [json_name = "page"];
+int32 page_size = 3 [json_name = "page_size"];
+}
+message ListRestaurantEntityResponse {
+repeated RestaurantEntity entities = 1 [json_name = "entities"];
+}
+message DeleteRestaurantEntityRequest {
+string entity_id = 1 [json_name = "entity_id"];
+}
+message DeleteRestaurantEntityResponse {}
+message SearchRestaurantEntitiesByLocationRequest {
+repeated double location = 1 [json_name = "location"];
+string sort = 2 [json_name = "sort"];
+int32 page = 3 [json_name = "page"];
+int32 page_size = 4 [json_name = "page_size"];
+}
+message SearchRestaurantEntitiesByLocationResponse {
+repeated RestaurantEntity entities = 1 [json_name = "entities"];
+}
+message SearchClosestRestaurantsRequest {
+string entity_id = 1 [json_name = "entity_id"];
+repeated double location = 2 [json_name = "location"];
+}
+message SearchClosestRestaurantsResponse {
+  repeated string restaurant_ids = 1 [json_name = "restaurant_ids"];
+}
