@@ -1,0 +1,14 @@
+syntax = "proto3";
+option go_package = "github.com/DevShuxat/services-proto/restaurant_staff";
+
+import "restaurant_staff/manager.proto";
+service StaffService {
+rpc RegisterManager (RegisterManagerRequest) returns (RegisterManagerResponse);
+rpc ChangeManagerPassword(ChangeManagerPasswordRequest) returns (ChangeManagerPasswordResponse);
+rpc LoginManager(LoginManagerRequest) returns (LoginManagerResponse);
+rpc GetManagerProfile(GetManagerProfileRequest) returns (GetManagerProfileResponse);
+rpc UpdateManagerProfile(UpdateManagerProfileRequest) returns (UpdateManagerProfileResponse);
+rpc CreateManagerRestaurantAssignment(CreateManagerRestaurantAssignmentRequest) returns (CreateManagerRestaurantAssignmentResponse);
+rpc RemoveManagerRestaurantAssignment(RemoveManagerRestaurantAssignmentRequest) returns (RemoveManagerRestaurantAssignmentResponse);
+rpc GetManagerRestaurant(GetManagerRestaurantRequest) returns (GetManagerRestaurantResponse);
+}

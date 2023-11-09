@@ -1,0 +1,17 @@
+syntax = "proto3";
+option go_package = "./logistics_support";
+message Rating {
+string id = 1 [json_name = "id"];
+string order_id = 2 [json_name = "order_id"];
+int32 rating = 3 [json_name = "rating"];
+string comment = 4 [json_name = "comment"];
+string created_at = 5 [json_name = "created_at"];
+string updated_at = 6 [json_name = "updated_at"];
+}
+message GetRatingRequest {
+string rating_id = 1 [json_name = "rating_id"];
+string order_id = 2 [json_name = "order_id"];
+}
+message GetRatingResponse {
+Rating rating = 1 [json_name = "rating"];
+}

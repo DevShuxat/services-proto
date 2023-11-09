@@ -1,0 +1,75 @@
+syntax = "proto3";
+option go_package = "./restaurant_staff";
+
+message ManagerProfile {
+string manager_id = 1 [json_name = "manager_id"];
+string entity_id = 2 [json_name = "entity_id"];
+string name = 3 [json_name = "name"];
+string image_url = 4 [json_name = "image_url"];
+string phone_number = 5 [json_name = "phone_number"];
+string email = 6 [json_name = "email"];
+string created_at = 7 [json_name = "created_at"];
+string updated_at = 8 [json_name = "updated_at"];
+}
+message ManagerRestaurantAssignment {
+int64 id = 1 [json_name = "id"];
+string manager_id = 2 [json_name = "manager_id"];
+string restaurant_id = 3 [json_name = "restaurant_id"];
+string created_at = 4 [json_name = "created_at"];
+}
+message RegisterManagerRequest {
+string entity_id = 1 [json_name = "entity_id"];
+string restaurant_id = 2 [json_name = "restaurant_id"];
+string email = 3 [json_name = "email"];
+string password = 4 [json_name = "password"];
+}
+message RegisterManagerResponse {
+string manager_id = 1 [json_name = "manager_id"];
+}
+message ChangeManagerPasswordRequest {
+string manager_id = 1 [json_name = "manager_id"];
+string current_password = 2 [json_name = "current_password"];
+string new_password = 3 [json_name = "new_password"];
+}
+message ChangeManagerPasswordResponse {}
+message LoginManagerRequest {
+string email = 1 [json_name = "email"];
+string password = 2 [json_name = "password"];
+}
+message LoginManagerResponse {
+ManagerProfile profile = 1 [json_name = "profile"];
+string token = 2 [json_name = "token"];
+}
+message GetManagerProfileRequest {
+string manager_id = 1;
+}
+message GetManagerProfileResponse {
+ManagerProfile profile = 1 [json_name = "profile"];
+}
+message UpdateManagerProfileRequest {
+string manager_id = 1 [json_name = "manager_id"];
+string name = 2 [json_name = "name"];
+string phone_number = 3 [json_name = "phone_number"];
+string email = 4 [json_name = "email"];
+string image_url = 5 [json_name = "image_url"];
+}
+message UpdateManagerProfileResponse {
+ManagerProfile profile = 1 [json_name = "profile"];
+}
+message CreateManagerRestaurantAssignmentRequest {
+string manager_id = 1 [json_name = "manager_id"];
+string restaurant_id = 2 [json_name = "restaurant_id"];
+}
+message CreateManagerRestaurantAssignmentResponse {
+int64 assigment_id = 1 [json_name = "assigment_id"];
+}
+message RemoveManagerRestaurantAssignmentRequest {
+int64 assigment_id = 1 [json_name = "assigment_id"];
+}
+message RemoveManagerRestaurantAssignmentResponse {}
+message GetManagerRestaurantRequest {
+string manager_id = 1 [json_name = "manager_id"];
+}
+message GetManagerRestaurantResponse {
+string restaurant_id = 1 [json_name = "restaurant_id"];
+}

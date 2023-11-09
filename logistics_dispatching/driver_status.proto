@@ -1,0 +1,42 @@
+syntax = "proto3";
+option go_package = "./logistics_dispatching";
+message DriverLocation {
+string id = 1 [json_name = "id"];
+string driver_id = 2 [json_name = "driver_id"];
+double longitude = 3 [json_name = "longitude"];
+double latitude = 4 [json_name = "latitude"];
+string created_at = 5 [json_name = "created_at"];
+}
+message DriverStatus {
+string driver_id = 1 [json_name = "driver_id"];
+string status = 2 [json_name = "status"];
+string created_at = 3 [json_name = "created_at"];
+string updated_at = 4 [json_name = "updated_at"];
+}
+message TrackDriverLocationRequest {
+string driver_id = 1 [json_name = "driver_id"];
+double longitude = 2 [json_name = "longitude"];
+double latitude = 3 [json_name = "latitude"];
+}
+message TrackDriverLocationResponse {
+DriverLocation location = 1 [json_name = "location"];
+}
+message ListDriverLocationRequest {
+string driver_id = 1 [json_name = "driver_id"];
+string start_time = 2 [json_name = "start_time"];
+string end_time = 3 [json_name = "end_time"];
+}
+message ListDriverLocationResponse {
+repeated DriverLocation locations = 1 [json_name = "locations"];
+}
+message UpdateDriverStatusRequest {
+string driver_id = 1 [json_name = "driver_id"];
+string status = 2 [json_name = "status"];
+}
+message UpdateDriverStatusResponse {}
+message GetDriverStatusRequest {
+string driver_id = 1[json_name = "driver_id"];
+}
+message GetDriverStatusResponse {
+DriverStatus status = 1 [json_name = "status"];
+}

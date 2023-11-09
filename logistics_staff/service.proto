@@ -1,0 +1,11 @@
+syntax = "proto3";
+option go_package = "github.com/DevShuxat/services-proto/logistics_staff";
+
+import "logistics_staff/driver.proto";
+service StaffService {
+rpc RegisterDriver (RegisterDriverRequest) returns (RegisterDriverResponse);
+rpc LoginDriver (LoginDriverRequest) returns (LoginDriverResponse);
+rpc ConfirmSmsCode(ConfirmSmsCodeRequest) returns (ConfirmSmsCodeResponse);
+rpc GetDriverProfile(GetDriverProfileRequest) returns (GetDriverProfileResponse);
+rpc UpdatpDriverProfile(UpdateDriverProfileRequest) returns (UpdateDriverProfileResponse);
+}

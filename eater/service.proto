@@ -6,6 +6,7 @@ import "eater/address.proto";
 import "eater/wallet.proto";
 import "eater/order.proto";
 import "eater/rating.proto";
+
 service EaterService {
   rpc SignupEater (SignupEaterRequest) returns (SignupEaterResponse);
   rpc ConfirmSmsCode(ConfirmSmsCodeRequest) returns (ConfirmSmsCodeResponse);
